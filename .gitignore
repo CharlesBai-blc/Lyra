@@ -10,6 +10,9 @@ __pycache__/
 instance/
 data.db
 
+songs_condensed.csv
+songs_with_attributes_and_lyrics.csv
+
 .pytest_cache/
 .coverage
 htmlcov/
