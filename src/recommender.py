@@ -178,5 +178,5 @@ class TfIdfSongRecommender:
 @lru_cache(maxsize=1)
 def get_recommender() -> TfIdfSongRecommender:
     current_directory = os.path.dirname(os.path.abspath(__file__))
-    csv_path = os.path.join(current_directory, "data_processing", "songs_condensed.csv")
+    csv_path = os.path.join(current_directory, "data_processing", "sample_dataset.csv")
     return TfIdfSongRecommender(csv_path=csv_path)
