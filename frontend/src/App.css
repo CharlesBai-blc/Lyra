@@ -149,6 +149,7 @@ body {
   line-height: 1.2;
 }
 .song-meta {
+  font-family: 'DM Sans', sans-serif;
   font-size: 14px;
   color: #9e96a8;
   margin-top: 3px;
@@ -161,6 +162,7 @@ body {
   padding-top: 2px;
 }
 .score-badge {
+  font-family: 'DM Sans', sans-serif;
   font-size: 13px;
   color: #534AB7;
   background: #e4e0f5; 
@@ -221,6 +223,7 @@ body {
 }
 
 .lyrics-preview {
+  font-family: 'DM Sans', sans-serif;
   font-size: 15px;
   font-style: italic;
   color: #9e96a8; 
@@ -245,6 +248,7 @@ body {
   color: #534AB7;  
 }
 .lyrics-full {
+  font-family: 'DM Sans', sans-serif;
   font-size: 15px;
   font-style: italic;
   line-height: 1.8;
@@ -280,7 +284,10 @@ body {
   to { opacity: 1; transform: none; }
 }
 
-
+.spotify-icon {
+  display: inline-flex;
+  margin-right: 6px;
+}
 
 /* testing button css settings, only for testing purposes */
 .mode-toggle {

@@ -1,6 +1,7 @@
 import { FormEvent, useState } from 'react'
 import './App.css'
 import { SongRecommendation } from './types'
+import { FaSpotify } from 'react-icons/fa'
 
 function FeatureBar({ label, value, max, color, display }: {
   label: string; value: number; max: number; color: string; display?: string
@@ -138,8 +139,12 @@ function App(): JSX.Element {
             <div className="card-actions">
               <span className="score-badge">{song.tfidf_score.toFixed(3)} match</span>
               <a className="spotify-btn" href={song.spotify_url} target="_blank" rel="noreferrer">
+                <span className="spotify-icon">
+                  <FaSpotify />
+                </span>
                 Spotify
               </a>
+              
             </div>
           </div>
           <div className="features-row">
