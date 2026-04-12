@@ -279,3 +279,28 @@ body {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: none; }
 }
+
+
+
+/* testing button css settings, only for testing purposes */
+.mode-toggle {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin: 1rem 0;
+}
+
+.mode-btn {
+  padding: 0.4rem 1.2rem;
+  border-radius: 999px;
+  border: 1px solid #7F77DD;
+  background: transparent;
+  color: #7F77DD;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.mode-btn.active {
+  background: #7F77DD;
+  color: white;
+}

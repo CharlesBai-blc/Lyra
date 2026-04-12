@@ -32,6 +32,16 @@ function App(): JSX.Element {
   const [error, setError] = useState<string>('')
   const [openLyrics, setOpenLyrics] = useState<Set<string>>(new Set())
 
+
+
+
+  //testing purposes for tf idf (prototype 1) vs svd performance (prototype 2)
+  const [mode, setMode] = useState<'svd' | 'tfidf'>('svd')
+  // 
+
+
+
+
   function toggleLyrics(id: string) { 
     setOpenLyrics(prev => {
       const next = new Set(prev)
@@ -52,7 +62,7 @@ function App(): JSX.Element {
     setLoading(true)
     setError('')
     try {
-      const response = await fetch(`/api/recommendations?query=${encodeURIComponent(query)}&top_k=10`)
+      const response = await fetch(`/api/recommendations?query=${encodeURIComponent(query)}&top_k=10&mode=${mode}`)
       if (!response.ok) {
         setError(`Request failed (${response.status})`)
         setSongs([])
@@ -92,6 +102,27 @@ function App(): JSX.Element {
           {loading ? < LoadingDots /> : 'Get Recommendations'}
         </button>
       </div>
+
+{/* testing svd and tfidf differences buttons above results, only for testing */}
+    <p> Test buttons only :I, remove when done from app.css, app.tsx, routes.py </p>
+      <div className="mode-toggle">
+        <button
+          onClick={() => setMode('tfidf')}
+          className={mode === 'tfidf' ? 'mode-btn active' : 'mode-btn'}
+        >
+          TF-IDF
+        </button>
+        <button
+          onClick={() => setMode('svd')}
+          className={mode === 'svd' ? 'mode-btn active' : 'mode-btn'}
+        >
+          SVD
+        </button>
+      </div>
+
+
+{/* // */}
+
 
       {error && <div className="error-banner">{error}</div>}
 
