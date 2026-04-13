@@ -65,38 +65,14 @@ body {
   width: 100%;
   margin-bottom: 1.5rem;
 }
-.search-bar input {
-  flex: 1;
-  height: 54px;
-  padding: 0 16px;
-  font-size: 16px;
-  font-family: 'DM Sans', sans-serif;
-  background: rgba(255, 255, 255, 0.55); /* was #ede8de */
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.8); /* was #d6cfc2 */
-  border-radius: 10px;
-  color: #1a1624;
-  outline: none;
-}
-.search-bar input::placeholder {
-  color: #b0a89c;
-}
-.search-bar input:focus {
-  border-color: #534AB7;
-}
+
 .search-bar button {
-  background: linear-gradient(
-    135deg,
-    #2e2845 0%,
-    #1a1624 100%
-  );
+  background: #7F77DD;
   height: 54px;
   padding: 0 28px;
   font-size: 16px;
   font-weight: 500;
   font-family: 'DM Sans', sans-serif;
-  background: #1a1624;
   border: none;
   border-radius: 10px;
   color: #f0eaf8;
@@ -105,7 +81,7 @@ body {
   transition: transform 0.1s ease, background 0.15s ease, box-shadow 0.15s ease;
 }
 .search-bar button:hover {
-  background: #2e2845;
+  background: #6a62c4;
   transform: translateY(-1px);
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
@@ -346,26 +322,45 @@ body {
   margin-right: 6px;
 }
 
-
-/* testing button css settings, only for testing purposes */
-.mode-toggle {
+.input-with-prefix {
+  flex: 1;
   display: flex;
-  gap: 0.5rem;
-  justify-content: center;
-  margin: 1rem 0;
+  align-items: center;
+  height: 54px;
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+  padding: 0 16px;
+  gap: 6px;
 }
 
-.mode-btn {
-  padding: 0.4rem 1.2rem;
-  border-radius: 999px;
-  border: 1px solid #7F77DD;
+.input-with-prefix:focus-within {
+  border-color: #534AB7;
+}
+
+.input-prefix {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  font-style: italic;
+  font-weight: 500;
+  color: #1a1624;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.input-with-prefix input {
+  flex: 1;
+  height: 100%;
+  font-size: 16px;
+  font-family: 'DM Sans', sans-serif;
   background: transparent;
-  color: #7F77DD;
-  cursor: pointer;
-  font-size: 0.85rem;
+  border: none;
+  color: #1a1624;
+  outline: none;
 }
 
-.mode-btn.active {
-  background: #7F77DD;
-  color: white;
+.input-with-prefix input::placeholder {
+  color: #b0a89c;
 }

@@ -72,16 +72,6 @@ function App(): JSX.Element {
   const [error, setError] = useState<string>('')
   const [openLyrics, setOpenLyrics] = useState<Set<string>>(new Set())
 
-
-
-
-  //testing purposes for tf idf (prototype 1) vs svd performance (prototype 2)
-  const [mode, setMode] = useState<'svd' | 'tfidf'>('svd')
-  // 
-
-
-
-
   function toggleLyrics(id: string) { 
     setOpenLyrics(prev => {
       const next = new Set(prev)
@@ -102,7 +92,7 @@ function App(): JSX.Element {
     setLoading(true)
     setError('')
     try {
-      const response = await fetch(`/api/recommendations?query=${encodeURIComponent(query)}&top_k=10&mode=${mode}`)
+      const response = await fetch(`/api/recommendations?query=${encodeURIComponent(query)}&top_k=10`)
       if (!response.ok) {
         setError(`Request failed (${response.status})`)
         setSongs([])
@@ -126,43 +116,25 @@ function App(): JSX.Element {
       <header className="hero">
         <p className="eyebrow">Emotion · Song · Matching</p>  {/* ← add this line */}
         <h1>Lyra</h1>
-        <p>Describe how you're feeling and get songs that match your emotional state.</p>
+        <p>Describe how you're feeling and get songs that match your emotional state, both lyrically and sonically. </p>
       </header>
 
       <div className="search-bar">
-        <input
-          placeholder='Try: "I feel sad and need calm comfort songs"'
-          value={emotionInput}
-          onChange={(e) => setEmotionInput(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && fetchRecommendations(e)}
-          disabled={loading}
-          aria-label="Emotion input"
-        />
+<div className="input-with-prefix">
+  <span className="input-prefix">I feel...</span>
+  <input
+    placeholder="numb, like I'm watching life through glass"
+    value={emotionInput}
+    onChange={(e) => setEmotionInput(e.target.value)}
+    onKeyDown={(e) => e.key === 'Enter' && fetchRecommendations(e)}
+    disabled={loading}
+    aria-label="Emotion input"
+  />
+</div>
         <button onClick={fetchRecommendations} disabled={loading}>
           {loading ? < LoadingDots /> : 'Get Recommendations'}
         </button>
       </div>
-
-{/* testing svd and tfidf differences buttons above results, only for testing */}
-    <p> Test buttons only :I, remove when done from app.css, app.tsx, routes.py </p>
-      <div className="mode-toggle">
-        <button
-          onClick={() => setMode('tfidf')}
-          className={mode === 'tfidf' ? 'mode-btn active' : 'mode-btn'}
-        >
-          TF-IDF
-        </button>
-        <button
-          onClick={() => setMode('svd')}
-          className={mode === 'svd' ? 'mode-btn active' : 'mode-btn'}
-        >
-          SVD
-        </button>
-      </div>
-
-
-{/* // */}
-
 
       {error && <div className="error-banner">{error}</div>}
 
