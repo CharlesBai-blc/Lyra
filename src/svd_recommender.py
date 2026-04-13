@@ -27,7 +27,7 @@ N_COMPONENTS = 40
 CANDIDATE_POOL = 200
  
 # semantic anchor settings
-TOP_ANCHORS = 3
+TOP_ANCHORS = 2
 ANCHOR_THRESHOLD = 0.25
 # if the top anchor similarity exceeds this, treat query as purely metaphorical
 # and replace raw tokens entirely with emotion terms in the TF-IDF vector
@@ -118,7 +118,7 @@ ANCHOR_PHRASES: dict[str, str] = {
     "anxious":     "feeling anxious nervous worried fearful dread unease reality slipping losing control",
     "energetic":   "feeling energetic pumped up driven motivated",
     "melancholy":  "feeling melancholy bittersweet wistful longing",
-    "romantic":    "feeling romantic loving tender intimate",
+   "romantic": "feeling romantic loving tender intimate adoring warm affectionate cherished in love butterflies",
     "peaceful":    "feeling peaceful still tranquil gentle",
     "euphoric":    "feeling euphoric ecstatic elated blissful",
     "numb":        "feeling numb detached dissociated hollow void",
