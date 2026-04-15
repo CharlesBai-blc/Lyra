@@ -20,7 +20,7 @@ import numpy as np
  
  
 TOKEN_RE = re.compile(r"[a-zA-Z']+")
- 
+
 AUDIO_SCALE = 8.0
 MAX_VOCAB = 3000
 N_COMPONENTS = 40

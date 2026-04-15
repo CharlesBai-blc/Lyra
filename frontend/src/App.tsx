@@ -1,7 +1,8 @@
-import { FormEvent, useState } from 'react'
+import { FormEvent, useState, useEffect } from 'react'
 import './App.css'
 import { SongRecommendation } from './types'
 import { FaSpotify } from 'react-icons/fa'
+import clickFile from './assets/click.wav'
 
 function FeatureBar({ label, value, max, color, display }: {
   label: string; value: number; max: number; color: string; display?: string
@@ -57,12 +58,9 @@ function FeatureBar({ label, value, max, color, display }: {
   )
 }
 
-function LoadingDots() {
-  return (
-    <span className="loading-dots">
-      <span className="dot" /><span className="dot" /><span className="dot" />
-    </span>
-  )
+function getTrackId(spotifyUrl: string): string | null {
+  const match = spotifyUrl.match(/track\/([a-zA-Z0-9]+)/)
+  return match ? match[1] : null
 }
 
 function App(): JSX.Element {
@@ -70,18 +68,80 @@ function App(): JSX.Element {
   const [loading, setLoading] = useState<boolean>(false)
   const [songs, setSongs] = useState<SongRecommendation[]>([])
   const [error, setError] = useState<string>('')
-  const [openLyrics, setOpenLyrics] = useState<Set<string>>(new Set())
+  const exprompts = [
+    "soft sadness with warm memories",
+    "late night overthinking energy",
+    "like i'm missing someone but smiling anyway",
+    "like i'm healing but not there yet",
+    "nostalgic but calm",
+    "heavy but still moving forward"
+  ]
+  const [promptIndex, setPromptIndex] = useState(0)
+  const [typedText, setTypedText] = useState("")
+  const [showHint, setShowHint] = useState(true)
+  const [isActive, setIsActive] = useState(false)
+  
+  const playClick = () => {
+    const audio = new Audio(clickFile);
+    audio.volume = 0.25;
+  
+    audio.play().catch((err) => {
+      console.log("audio failed:", err);
+    });
+  };
+
   //testing purposes for tf idf (prototype 1) vs svd performance (prototype 2)
   const [mode, setMode] = useState<'svd' | 'tfidf'>('svd')
   // 
 
-  function toggleLyrics(id: string) { 
-    setOpenLyrics(prev => {
-      const next = new Set(prev)
-      next.has(id) ? next.delete(id) : next.add(id)
-      return next
-    })
-  }
+
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>
+  
+    const resetIdle = () => {
+      setIsActive(true)
+  
+      clearTimeout(timer)
+  
+      timer = setTimeout(() => {
+        setIsActive(false)
+        setShowHint(true)
+        setPromptIndex((prev) => (prev + 1) % exprompts.length)
+      }, 5000)
+    }
+  
+    const events = ["keydown", "mousedown", "touchstart"]
+  
+    events.forEach((e) => window.addEventListener(e, resetIdle))
+  
+    resetIdle()
+    setIsActive(false)
+  
+    return () => {
+      clearTimeout(timer)
+      events.forEach((e) => window.removeEventListener(e, resetIdle))
+    }
+  }, [])
+
+  useEffect(() => {
+    if (isActive || !showHint || emotionInput) return
+  
+    const current = exprompts[promptIndex]
+    let i = 0
+  
+    setTypedText("")
+  
+    const interval = setInterval(() => {
+      i++
+      setTypedText(current.slice(0, i))
+  
+      if (i >= current.length) {
+        clearInterval(interval)
+      }
+    }, 40)
+  
+    return () => clearInterval(interval)
+  }, [promptIndex, isActive])
 
   const fetchRecommendations = async (e: FormEvent): Promise<void> => {
     e.preventDefault()
@@ -117,25 +177,32 @@ function App(): JSX.Element {
   return (
     <div className="full-body-container">
       <header className="hero">
-        <p className="eyebrow">Emotion · Song · Matching</p>  {/* ← add this line */}
         <h1>Lyra</h1>
         <p>Describe how you're feeling and get songs that match your emotional state, both lyrically and sonically. </p>
       </header>
 
       <div className="search-bar">
-<div className="input-with-prefix">
-  <span className="input-prefix">I feel...</span>
-  <input
-    placeholder="numb, like I'm watching life through glass"
-    value={emotionInput}
-    onChange={(e) => setEmotionInput(e.target.value)}
-    onKeyDown={(e) => e.key === 'Enter' && fetchRecommendations(e)}
-    disabled={loading}
-    aria-label="Emotion input"
-  />
-</div>
-        <button onClick={fetchRecommendations} disabled={loading}>
-          {loading ? < LoadingDots /> : 'Get Recommendations'}
+      <div className="input-with-prefix">
+        <span className="input-prefix">I feel...</span>
+
+        <div className="input-stack">
+          <input
+            value={emotionInput}
+            onChange={(e) => {setEmotionInput(e.target.value); setShowHint(false)}}
+            onKeyDown={(e) => e.key === 'Enter' && fetchRecommendations(e)}
+            disabled={loading}
+          />
+          {showHint && !emotionInput && !isActive && (
+            <div className="input-suggestion">
+              {typedText}
+              <span className="cursor">|</span>
+            </div>
+          )}
+        </div>
+      </div>
+
+        <button onClick={(e) => { playClick(); fetchRecommendations(e); }} disabled={loading}>
+          {loading ? 'finding...' : 'find my song'}
         </button>
       </div>
 
@@ -162,48 +229,73 @@ function App(): JSX.Element {
       {error && <div className="error-banner">{error}</div>}
 
       <div id="answer-box">
-        {songs.map((song) => (
+        {songs.map((song) => {
+          const trackId = getTrackId(song.spotify_url)
 
-        <div key={song.id} className="song-card">
-          <div className="card-top">
-            <div className="card-title-block">
-              <div className="song-title">{song.title}</div>
-              <div className="song-meta">{song.artist} · {song.album}</div>
-            </div>
-            <div className="card-actions">
-              <span className="score-badge">{song.tfidf_score.toFixed(3)} match</span>
-              <a className="spotify-btn" href={song.spotify_url} target="_blank" rel="noreferrer">
-                <span className="spotify-icon">
-                  <FaSpotify />
-                </span>
-                Spotify
-              </a>
-              
-            </div>
-          </div>
-          <div className="features-row">
-          <FeatureBar label="Danceability" value={Math.pow(song.danceability, 0.8)} max={1} color="#7F77DD" />
-          <FeatureBar label="Energy"       value={Math.pow(song.energy, 0.7)}       max={1} color="#1D9E75" />
-          <FeatureBar label="Valence"      value={Math.pow(song.valence, 0.9)}      max={1} color="#EF9F27" />
-          <FeatureBar
-            label="Tempo"
-            value={song.tempo}
-            max={200}
-            color="#D85A30"
-            display={`${Math.round(song.tempo)} BPM`}
-          />
+          return (
+            <div key={song.id} className="song-card">
 
-          </div>
-          <p className="lyrics-preview">{song.lyrics_preview}</p>
-          <button className="lyrics-toggle" onClick={() => toggleLyrics(song.id)}>
-            {openLyrics.has(song.id) ? 'Hide lyrics ↑' : 'Show full lyrics ↓'}
-          </button>
-          {openLyrics.has(song.id) && (
-            <p className="lyrics-full">{song.lyrics_full}</p>
-          )}
-        </div>
-          
-        ))}
+              {/* left */}
+              <div className="song-main">
+
+              <div className="card-top">
+
+                <div className="card-title-block">
+                  <div className="song-title">{song.title}</div>
+                  <div className="song-meta">{song.artist} · {song.album}</div>
+                </div>
+
+                <div className="card-actions">
+                  <div className="score-badge">
+                    {song.tfidf_score.toFixed(3)} match
+                  </div>
+
+                  <a
+                    className="spotify-btn"
+                    href={song.spotify_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={playClick}
+                  >
+                    <span className="spotify-icon">
+                      <FaSpotify />
+                    </span>
+                    <span className="spotify-text" >Spotify</span>
+                  </a>
+                </div>
+
+              </div>
+
+                <div className="features-row">
+                  <FeatureBar label="Danceability" value={song.danceability} max={1} color="#7F77DD" />
+                  <FeatureBar label="Energy" value={song.energy} max={1} color="#1D9E75" />
+                  <FeatureBar label="Valence" value={song.valence} max={1} color="#EF9F27" />
+                  <FeatureBar label="Tempo" value={song.tempo} max={200} color="#D85A30" display={`${Math.round(song.tempo)} BPM`} />
+                </div>
+
+              </div>
+
+{/* right side always visible */}
+                <div className="song-side">
+                
+
+                  {trackId && (
+                    <iframe
+                      className="spotify-embed"
+                      src={`https://open.spotify.com/embed/track/${trackId}?utm_source=generator&theme=0`}
+                      loading="lazy"
+                    />
+                  )}
+
+                  <div className="lyrics-full">
+                    {song.lyrics_full}
+                  </div>
+
+                </div>
+            
+            </div>
+          )
+})}
       </div>
     </div>
   )
