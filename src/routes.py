@@ -26,6 +26,7 @@ def register_routes(app):
     def recommendations():
         query = request.args.get("query", "")
         mode = request.args.get("mode", "svd")
+        # USE_LLM=True
         if not query.strip():
             return jsonify([])
         try:

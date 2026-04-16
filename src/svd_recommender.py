@@ -20,7 +20,7 @@ import numpy as np
  
  
 TOKEN_RE = re.compile(r"[a-zA-Z']+")
-
+ 
 AUDIO_SCALE = 8.0
 MAX_VOCAB = 3000
 N_COMPONENTS = 40
@@ -31,7 +31,7 @@ TOP_ANCHORS = 2
 ANCHOR_THRESHOLD = 0.25
 # if the top anchor similarity exceeds this, treat query as purely metaphorical
 # and replace raw tokens entirely with emotion terms in the TF-IDF vector
-REWRITE_THRESHOLD = 0.30
+REWRITE_THRESHOLD = 0.5
  
  
 # ---------------------------------------------------------------------------
@@ -112,6 +112,7 @@ AUDIO_HINTS: dict[str, list[float]] = {
 # enough semantic surface to match metaphorical/poetic queries against.
 ANCHOR_PHRASES: dict[str, str] = {
     "happy":       "feeling happy joyful cheerful upbeat",
+    "mad": ["angry", "rage", "furious", "aggressive"],
     "sad":         "feeling sad sorrowful tearful grief",
     "angry":       "feeling angry furious rage resentment",
     "calm":        "feeling calm peaceful serene quiet",
@@ -493,9 +494,11 @@ class SvdSongRecommender:
  
     def recommend(self, query: str, top_k: int = 10) -> list[dict[str, Any]]:
         from recommender import get_recommender
- 
+
         # rewrite query before passing to TF-IDF retrieval
         rewritten_counts, was_rewritten = _weighted_query_counts(query)
+        print(f"[DEBUG] query='{query}' | rewritten={was_rewritten} | top terms={rewritten_counts.most_common(5)}")
+        
         # synthesise a rewritten query string for the TF-IDF retriever
         # by repeating each term proportional to its weight
         if was_rewritten:
@@ -568,6 +571,8 @@ class SvdSongRecommender:
             r["tfidf_score"] = round(final_score, 5)
             out.append(r)
  
+        print(f"[DEBUG] top 3 results: {[r['title'] for r in out[:3]]}")
+        print(f"[DEBUG] audio hint: {hint}")
         return out
  
  
