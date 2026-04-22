@@ -164,7 +164,7 @@ function App(): JSX.Element {
       const data: SongRecommendation[] = await response.json()
       setSongs(data)
       if (data.length === 0) {
-        setError('No TF-IDF matches found. Try adding more emotional keywords.')
+        setError('No matches found. Try adding more emotional keywords.')
       }
     } catch {
       setError('Unable to load recommendations right now.')
@@ -208,18 +208,11 @@ function App(): JSX.Element {
 
 {/* testing svd and tfidf differences buttons above results, only for testing */}
       <div className="mode-toggle">
-        <button
-          onClick={() => setMode('tfidf')}
-          className={mode === 'tfidf' ? 'mode-btn active' : 'mode-btn'}
-        >
-          TF-IDF
-        </button>
-        <button
-          onClick={() => setMode('svd')}
-          className={mode === 'svd' ? 'mode-btn active' : 'mode-btn'}
-        >
-          SVD
-        </button>
+        <div className="toggle-track">
+          <div className={`toggle-thumb ${mode === 'svd' ? 'right' : 'left'}`} />
+          <button className={`toggle-opt ${mode === 'tfidf' ? 'active' : ''}`} onClick={() => setMode('tfidf')}>TF-IDF</button>
+          <button className={`toggle-opt ${mode === 'svd' ? 'active' : ''}`} onClick={() => setMode('svd')}>SVD</button>
+        </div>
       </div>
 
 
