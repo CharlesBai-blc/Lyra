@@ -11,4 +11,5 @@ export interface SongRecommendation {
   lyrics_preview: string;
   lyrics_full: string;
   tfidf_score: number;
+  svd_score?: number;
 }

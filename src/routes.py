@@ -27,8 +27,8 @@ def register_routes(app):
     @app.route("/api/recommendations")
     def recommendations():
         query = request.args.get("query", "")
-        mode = request.args.get("mode", "svd")
-        USE_LLM=True
+        mode = request.args.get("mode", "rag")
+
         if not query.strip():
             return jsonify([])
         try:
@@ -38,18 +38,22 @@ def register_routes(app):
         top_k = max(1, min(top_k, 25))
 
         if mode == "tfidf":
-            from recommender import get_recommender
             matches = get_recommender().recommend(query=query, top_k=top_k)
-        else:
-            from svd_recommender import get_svd_recommender
+        elif mode == "svd":
             matches = get_svd_recommender().recommend(query=query, top_k=top_k)
+        elif mode == "rag":
+            matches = get_svd_recommender().recommend(query=query, top_k=top_k)
+        else:
+            return jsonify({"error": "Invalid mode"}), 400
 
         return jsonify(matches)
-
+    
     if USE_LLM:
-        from llm_routes import register_chat_route
+            from llm_routes import register_chat_route
 
-        def song_search(query, top_k=10):
-            return get_svd_recommender().recommend(query=query, top_k=top_k)
+            def song_search(query, top_k=10):
+                return get_svd_recommender().recommend(query=query, top_k=top_k)
 
-        register_chat_route(app, song_search)
+            register_chat_route(app, song_search)
+
+    
