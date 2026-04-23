@@ -616,7 +616,7 @@ function App(): JSX.Element {
             <div>
               <header className="hero">
                 <h1>Lyra</h1>
-                <p>drop your feelings here — we'll find the soundtrack.</p>
+                <p>spill your feelings ✦ we'll find the perfect song ♪</p>
               </header>
               <div className="home-btn-wrap">
                 <button className="home-find-btn" onClick={() => { playClick(); addTab() }}>find my song →</button>
