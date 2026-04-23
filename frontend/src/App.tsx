@@ -602,8 +602,10 @@ function App(): JSX.Element {
                   ))}
                 </div>
                 <p className="mode-picker-note">
-                  RAG uses retrieval-augmented generation for richer matches.
-                  TF-IDF and SVD are faster vector methods.
+                  {activeTab.mode === 'rag' && 'RAG uses an LLM to understand metaphorical or long descriptions (e.g. "a rainy Sunday after a breakup").'}
+                  {activeTab.mode === 'tfidf' && 'TF-IDF is fast keyword-matching; works best with concrete emotion words ("sad", "angry").'}
+                  {activeTab.mode === 'svd' && 'SVD finds songs with similar emotional "shape" by matching against audio features (energy, valence, etc.) and lyrics.'}
+                  {!activeTab.mode && 'Pick a mode to see how it works.'}
                 </p>
                 <button
                   className="mode-picker-start"
