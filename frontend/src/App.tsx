@@ -313,7 +313,7 @@ function WinampPlayer({ songs, descriptions, onClickSound, mode, favoriteSongs, 
   )
 }
 
-// ─── helpers ──────────────────────────────────────────────────────────────────
+// ----- helpers -----
 
 let isMuted = false
 try { isMuted = localStorage.getItem('lyra-muted') === '1' } catch {}
@@ -392,7 +392,7 @@ async function fetchTrackData(artist: string, title: string): Promise<{ art: str
   }
 }
 
-// ─── How It Works Modal ───────────────────────────────────────────────────────
+// how it works modal----
 
 const HowItWorksModal = forwardRef<HTMLDivElement, { onClose: () => void }>(
   function HowItWorksModal({ onClose }, ref) {
@@ -455,7 +455,7 @@ const HowItWorksModal = forwardRef<HTMLDivElement, { onClose: () => void }>(
   )
 })
 
-// ─── App ──────────────────────────────────────────────────────────────────────
+// app -----------
 
 function App(): JSX.Element {
   const nextId = useRef(1)
