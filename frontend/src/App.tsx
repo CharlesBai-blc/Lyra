@@ -286,42 +286,62 @@ function WinampPlayer({ songs, descriptions, onClickSound, mode, favoriteSongs, 
 }
 
 //helpers
+let isMuted = false
+try { isMuted = localStorage.getItem('lyra-muted') === '1' } catch {}
+const muteListeners = new Set<() => void>()
+function setMuted(v: boolean) {
+  isMuted = v
+  try { localStorage.setItem('lyra-muted', v ? '1' : '0') } catch {}
+  muteListeners.forEach(l => l())
+}
+function subscribeMute(fn: () => void) {
+  muteListeners.add(fn)
+  return () => { muteListeners.delete(fn) }
+}
+
 function playClick() {
+  if (isMuted) return
   const audio = new Audio(clickFile)
   audio.volume = 0.4
   audio.play().catch(() => {})
 }
 
 function playTransform() {
+  if (isMuted) return
   const audio = new Audio(transportFile)
   audio.volume = 0.4
   audio.play().catch(() => {})
 }
 
 function playError() {
+  if (isMuted) return
   const audio = new Audio(errorFile)
   audio.volume = 0.35
   audio.play().catch(() => {})
 }
 
 function playSelect() {
+  if (isMuted) return
   const audio = new Audio(selectFile)
   audio.volume = 0.6
   audio.play().catch(() => {})
 }
 
 function playMiddle() {
+  if (isMuted) return
   const audio = new Audio(middleFile)
   audio.volume = .8
   audio.play().catch(() => {})
 }
 function playBoom() {
+  if (isMuted) return
   const audio = new Audio(boomFile)
   audio.volume = .5
   audio.play().catch(() => {})
 }
 
 function playConfirm() {
+  if (isMuted) return
   const audio = new Audio(confirmFile)
   audio.volume = .5
   audio.play().catch(() => {})
@@ -333,9 +353,24 @@ function playConfirm() {
 //   audio.play().catch(() => {})
 // }
 function playHeart() {
+  if (isMuted) return
   const audio = new Audio(heartFile)
   audio.volume = .2
   audio.play().catch(() => {})
+}
+
+function MuteButton() {
+  const [muted, setMutedState] = useState(isMuted)
+  useEffect(() => subscribeMute(() => setMutedState(isMuted)), [])
+  return (
+    <button
+      className="retro-ctrl"
+      onClick={() => setMuted(!muted)}
+      title={muted ? 'unmute' : 'mute'}
+    >
+      {muted ? <BsVolumeMuteFill /> : <BsVolumeUpFill />}
+    </button>
+  )
 }
 
 
@@ -488,6 +523,7 @@ function App(): JSX.Element {
         <div className="retro-titlebar">
           <span className="retro-title">lyra.exe</span>
           <div className="retro-controls">
+            <MuteButton />
             <button className="retro-ctrl" onClick={playBoom}>_</button>
             <button className="retro-ctrl" onClick={playMiddle}>□</button>
             <button className="retro-ctrl retro-close" onClick={playError}>✕</button>
