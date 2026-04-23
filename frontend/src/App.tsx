@@ -521,9 +521,11 @@ function App(): JSX.Element {
 
         {/* Title bar */}
         <div className="retro-titlebar">
-          <span className="retro-title">lyra.exe</span>
-          <div className="retro-controls">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span className="retro-title">lyra.exe</span>
             <MuteButton />
+          </div>
+          <div className="retro-controls">
             <button className="retro-ctrl" onClick={playBoom}>_</button>
             <button className="retro-ctrl" onClick={playMiddle}>□</button>
             <button className="retro-ctrl retro-close" onClick={playError}>✕</button>
