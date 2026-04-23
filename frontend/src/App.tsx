@@ -366,7 +366,6 @@ function MuteButton() {
     <button
       className="retro-ctrl"
       onClick={() => setMuted(!muted)}
-      title={muted ? 'unmute' : 'mute'}
     >
       {muted ? <BsVolumeMuteFill /> : <BsVolumeUpFill />}
     </button>
