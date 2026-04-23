@@ -77,7 +77,7 @@ body::before {
   animation: fadeUp 0.6s ease both;
   text-align: center;
   margin-bottom: 2.5rem;
-  margin-top:3rem;
+  margin-top:9rem;
 }
 
 .hero p {
@@ -1858,4 +1858,198 @@ body::before {
   font-size: 15px;
   color: #9e96a8;
   letter-spacing: 0.05em;
+}
+
+.home-btn-wrap {
+  display: flex;
+  flex-direction: column;   
+  align-items: center;     
+  gap: 60px;
+  padding-top: 60px;
+  padding-bottom: 20px;
+}
+
+.hiw-inline {
+  width: 620px;
+  max-width: 92vw;
+  background: linear-gradient(160deg, #f0ecff 0%, #e8f0fb 100%);
+  border: 3px solid #7F77DD;
+  border-radius: 10px;
+  box-shadow: 6px 6px 0px rgba(127, 119, 221, 0.45);
+  animation: fadeUp 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.hiw-inline-header {
+  background: linear-gradient(90deg, #8b84e8, #b87fd4, #c084c4, #b87fd4, #8b84e8);
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 6px 6px 0 0;
+}
+
+.hiw-inline-title {
+  font-family: 'VT323', monospace;
+  font-size: 18px;
+  color: white;
+  letter-spacing: 0.1em;
+}
+
+.hiw-inline-close {
+  width: 22px;
+  height: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  font-size: 11px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hiw-inline-close:hover {
+  background: rgba(220, 80, 80, 0.6);
+}
+
+.hiw-body {
+  padding: 22px 24px 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.hiw-intro {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  color: #4a4060;
+  line-height: 1.75;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(176, 168, 232, 0.35);
+}
+
+.hiw-section {
+  border: 2px solid #b0a8e8;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.55);
+  overflow: hidden;
+}
+
+.hiw-section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: linear-gradient(90deg, rgba(232, 230, 255, 0.7), rgba(212, 232, 245, 0.5));
+  border-bottom: 1px solid rgba(176, 168, 232, 0.4);
+}
+
+.hiw-chip {
+  font-family: 'VT323', monospace;
+  font-size: 18px;
+  padding: 3px 10px;
+  border-radius: 3px;
+  border: 2px solid #b0a8e8;
+  background: #e8e6ff;
+  color: #5a52b0;
+  box-shadow: 2px 2px 0 #8880cc;
+  letter-spacing: 0.05em;
+}
+
+.hiw-mode-name {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  color: #4a4060;
+  font-weight: 500;
+}
+
+.hiw-badge {
+  margin-left: auto;
+  font-family: 'VT323', monospace;
+  font-size: 15px;
+  padding: 2px 10px;
+  border-radius: 3px;
+  border: 1.5px solid;
+  letter-spacing: 0.05em;
+}
+
+.hiw-badge-fast  { background: #e1f5ee; border-color: #5dcaa5; color: #0f6e56; }
+.hiw-badge-smart { background: #eeedfe; border-color: #7f77dd; color: #3c3489; }
+.hiw-badge-deep  { background: #fbeaf0; border-color: #ed93b1; color: #72243e; }
+
+.hiw-section-body {
+  padding: 14px 16px;
+}
+
+.hiw-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hiw-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.hiw-step-num {
+  font-family: 'VT323', monospace;
+  font-size: 15px;
+  color: #8860b0;
+  min-width: 24px;
+  height: 24px;
+  border: 1.5px solid #b0a8e8;
+  border-radius: 3px;
+  background: #e8e6ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 1px 1px 0 #8880cc;
+}
+
+.hiw-step-text {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  color: #534AB7;
+  line-height: 1.6;
+  padding-top: 3px;
+}
+
+.hiw-footnote {
+  font-family: 'VT323', monospace;
+  font-size: 15px;
+  color: #9e96a8;
+  text-align: center;
+  letter-spacing: 0.06em;
+  padding-top: 4px;
+}
+
+.hiw-trigger-btn {
+  font-family: 'VT323', monospace;
+  font-size: 18px;
+  letter-spacing: 0.1em;
+  padding: 8px 22px;
+  cursor: pointer;
+  background: transparent;
+  border: 2px solid rgba(127, 119, 221, 0.45);
+  border-radius: 3px;
+  color: #8860b0;
+  box-shadow: 2px 2px 0 rgba(127, 119, 221, 0.2);
+  transition: none;
+  animation: fadeUp 0.6s ease 0.45s both;
+}
+
+.hiw-trigger-btn:hover {
+  background: rgba(232, 230, 255, 0.6);
+  border-color: #7F77DD;
+  color: #534AB7;
+  box-shadow: 2px 2px 0 #8880cc;
+}
+
+.hiw-trigger-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
 }
