@@ -1763,3 +1763,91 @@ body::before {
   85%  { opacity: 0.4; }
   100% { transform: translateY(-500px) rotate(12deg); opacity: 0; }
 }
+
+/* loading while finding songs */
+.loading-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  padding: 60px 20px;
+}
+
+.loading-status {
+  font-family: 'VT323', monospace;
+  font-size: 26px;
+  color: #8860b0;
+  letter-spacing: 0.1em;
+  animation: statusBlink 0.9s steps(1) infinite;
+}
+
+@keyframes statusBlink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0.3; }
+}
+
+.loading-stars {
+  display: flex;
+  gap: 8px;
+  font-family: 'VT323', monospace;
+  font-size: 22px;
+}
+.loading-stars span:nth-child(1) { color: #f7a8c4; animation: starTwinkle 1.2s steps(1) infinite 0s; }
+.loading-stars span:nth-child(2) { color: #b87fd4; animation: starTwinkle 1.2s steps(1) infinite 0.4s; }
+.loading-stars span:nth-child(3) { color: #7ec8e3; animation: starTwinkle 1.2s steps(1) infinite 0.8s; }
+.loading-stars span:nth-child(4) { color: #f7a8c4; animation: starTwinkle 1.2s steps(1) infinite 0.2s; }
+.loading-stars span:nth-child(5) { color: #b87fd4; animation: starTwinkle 1.2s steps(1) infinite 0.6s; }
+
+@keyframes starTwinkle {
+  0%, 49%  { opacity: 1; transform: scale(1); }
+  50%, 100%{ opacity: 0.2; transform: scale(0.6); }
+}
+
+.loading-bar-wrap {
+  width: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.loading-bar-label {
+  font-family: 'VT323', monospace;
+  font-size: 15px;
+  color: #9e96a8;
+  letter-spacing: 0.14em;
+}
+
+.loading-bar-outer {
+  width: 100%;
+  height: 20px;
+  background: #e8d5f5;
+  border: 3px solid #8860b0;
+  box-shadow: 3px 3px 0 #5a4080, inset 2px 2px 0 rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+
+.loading-bar-inner {
+  height: 100%;
+  background: repeating-linear-gradient(
+    90deg,
+    #b87fd4 0px, #b87fd4 10px,
+    #d4a0e8 10px, #d4a0e8 12px
+  );
+  box-shadow: inset 0 2px 0 rgba(255,255,255,0.5);
+  animation: pixelFill 2.4s steps(18, end) infinite;
+  width: 0%;
+}
+
+@keyframes pixelFill {
+  0%  { width: 0%; }
+  80% { width: 100%; }
+  100%{ width: 100%; }
+}
+
+.loading-subtitle {
+  font-family: 'Pixelify Sans', sans-serif;
+  font-size: 15px;
+  color: #9e96a8;
+  letter-spacing: 0.05em;
+}

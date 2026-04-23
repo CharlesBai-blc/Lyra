@@ -598,7 +598,21 @@ function App(): JSX.Element {
                   </button>
                 </div>
               </div>
-
+              {activeTab.loading && (
+                <div className="loading-screen">
+                  <div className="loading-status">finding ur song...</div>
+                  <div className="loading-stars">
+                    <span>★</span><span>✦</span><span>★</span><span>✦</span><span>★</span>
+                  </div>
+                  <div className="loading-bar-wrap">
+                    <div className="loading-bar-label">LOADING</div>
+                    <div className="loading-bar-outer">
+                      <div className="loading-bar-inner" />
+                    </div>
+                  </div>
+                  <div className="loading-subtitle">hang tight bestie ♪</div>
+                </div>
+              )}
               {activeTab.error && <div className="error-banner">{activeTab.error}</div>}
 
               {activeTab.songs.length > 0 && (
