@@ -26,6 +26,7 @@ interface Tab {
   descriptions: string[]
   error: string
   loading: boolean
+  expandedQuery: string
 }
 
 function FeatureBar({ label, value, max, color, display }: {
@@ -70,13 +71,58 @@ function FeatureBar({ label, value, max, color, display }: {
   )
 }
 
-function WinampPlayer({ songs, descriptions, onClickSound, mode, favoriteSongs, onToggleFavorite }: {
+function ScoreRevealBadge({ mode }: { mode: SearchMode }) {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <div className="score-reveal-wrap">
+      <span
+        className={`score-badge score-badge-interactive ${open ? 'active' : ''}`}
+        onClick={() => { playClick(); setOpen(p => !p) }}
+      >
+        {mode.toUpperCase()} Formula
+      </span>
+      {open && (
+        <div className="score-popup">
+          <div className="score-popup-titlebar">✦ match breakdown ✦</div>
+          <div className="score-popup-body">
+            <div className="score-popup-row">
+              <span className="score-popup-label">tfidf</span>
+              <div className="score-popup-bar-bg">
+                <div className="score-popup-bar-fill" style={{ width: '65%', background: '#d988b9' }} />
+              </div>
+              <span className="score-popup-pct">65%</span>
+            </div>
+            <div className="score-popup-row">
+              <span className="score-popup-label">music</span>
+              <div className="score-popup-bar-bg">
+                <div className="score-popup-bar-fill" style={{ width: '20%', background: '#7ec8e3' }} />
+              </div>
+              <span className="score-popup-pct">20%</span>
+            </div>
+            <div className="score-popup-row">
+              <span className="score-popup-label">svd</span>
+              <div className="score-popup-bar-bg">
+                <div className="score-popup-bar-fill" style={{ width: '15%', background: '#b59fdd' }} />
+              </div>
+              <span className="score-popup-pct">15%</span>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function WinampPlayer({ songs, descriptions, onClickSound, mode, favoriteSongs, onToggleFavorite, expandedQuery, query }: {
   songs: SongRecommendation[]
   descriptions: string[]
   onClickSound: () => void
   mode: SearchMode
   favoriteSongs: SongRecommendation[]
   onToggleFavorite: (song: SongRecommendation) => void
+  expandedQuery: string
+  query: string
 }) {
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -123,7 +169,6 @@ function WinampPlayer({ songs, descriptions, onClickSound, mode, favoriteSongs, 
     playTransform()
     f()
   }
-
   return (
     <div className="winamp-wrap">
       <div className="winamp-playlist">
@@ -166,17 +211,27 @@ function WinampPlayer({ songs, descriptions, onClickSound, mode, favoriteSongs, 
               <div className="winamp-card-header-text">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <div className="winamp-song-title">{song.title}</div>
-                  {descriptions[selectedIndex] && (
-                    <div className="rag-info-wrap">
-                      <span className="rag-info-btn">?</span>
-                      <div className="rag-tooltip">{descriptions[selectedIndex]}</div>
-                    </div>
-                  )}
                 </div>
                 <div className="winamp-song-meta">{cleanArtistName(song.artist)}  ✧  {song.album}</div>
+                {((mode === 'rag' || mode === 'svd') && descriptions[selectedIndex]) && (
+                  <div className="rag-info-wrap">
+                    <span className="rag-info-btn">?</span>
+                    <div className="rag-tooltip">
+                      <div className="rag-tooltip-query-label">✦ {mode === 'rag' ? 'modified query' : 'your query'} ✦</div>
+                      <div className="rag-tooltip-query-box">
+                        {mode === 'rag' ? expandedQuery : query}
+                      </div>
+                      <div className="rag-tooltip-desc">{descriptions[selectedIndex]}</div>
+                    </div>
+                  </div>
+                )}
               </div>
               <div className="winamp-score-row">
-                <span className="score-badge">{song.tfidf_score.toFixed(3)} match</span>
+                {mode === 'tfidf' ? (
+                  <span className="score-badge">{song.tfidf_score.toFixed(3)} match</span>
+                ) : (
+                  <ScoreRevealBadge mode={mode}/>
+                )}
                 <a className="spotify-btn" href={song.spotify_url} target="_blank" rel="noreferrer" onClick={onClickSound}>
                   <FaSpotify />
                   <span className="spotify-text">Spotify</span>
@@ -392,7 +447,7 @@ function App(): JSX.Element {
 
   const makeHomeTab = (): Tab => ({
     id: 'home', label: 'home', type: 'home', mode: null,
-    query: '', songs: [], descriptions: [], error: '', loading: false,
+    query: '', songs: [], descriptions: [], expandedQuery: '', error: '', loading: false,
   })
 
   const [tabs, setTabs] = useState<Tab[]>([makeHomeTab()])
@@ -428,7 +483,7 @@ function App(): JSX.Element {
     const id = `tab-${nextId.current++}`
     setTabs(prev => [...prev, {
       id, label: 'new tab', type: 'setup', mode: null,
-      query: '', songs: [], descriptions: [], error: '', loading: false,
+      query: '', songs: [], descriptions: [], expandedQuery: '', error: '', loading: false,
     }])
     setActiveId(id)
   }
@@ -463,11 +518,33 @@ function App(): JSX.Element {
         const songs = data.songs ?? []
         updateTab(tabId, {
           songs, descriptions: data.descriptions ?? [],
+          expandedQuery: data.expanded_query ?? '',
           error: songs.length === 0 ? 'No matches found. Try different words.' : '',
           label: query.length > 14 ? query.slice(0, 14) + '…' : query,
         })
+      } else if (mode === 'svd') {
+          const [response, descResponse] = await Promise.all([
+            fetch(`/api/recommendations?query=${encodeURIComponent(query)}&top_k=10&mode=svd`),
+            fetch('/api/rag', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ query, top_k: 10, skip_expansion: true }),
+            })
+          ])
+          if (!response.ok) {
+            updateTab(tabId, { error: `Request failed (${response.status})`, songs: [] })
+            return
+          }
+          const data: SongRecommendation[] = await response.json()
+          const descriptions = descResponse.ok ? (await descResponse.json()).descriptions ?? [] : []
+          updateTab(tabId, {
+            songs: data,
+            descriptions,
+            error: data.length === 0 ? 'No matches found. Try adding more emotional keywords.' : '',
+            label: query.length > 14 ? query.slice(0, 14) + '…' : query,
+          })
       } else {
-        const response = await fetch(`/api/recommendations?query=${encodeURIComponent(query)}&top_k=10&mode=${mode}`)
+        const response = await fetch(`/api/recommendations?query=${encodeURIComponent(query)}&top_k=10&mode=tfidf`)
         if (!response.ok) {
           updateTab(tabId, { error: `Request failed (${response.status})`, songs: [] })
           return
@@ -565,7 +642,7 @@ function App(): JSX.Element {
             </div>
           )}
 
-          {/* ── SETUP ── */}
+{/* setup */}
           {activeTab.type === 'setup' && (
             <div className="mode-picker-wrap">
               <div className="mode-picker-card">
@@ -649,6 +726,8 @@ function App(): JSX.Element {
                 <WinampPlayer
                   songs={activeTab.songs}
                   descriptions={activeTab.descriptions}
+                  expandedQuery={activeTab.expandedQuery}
+                  query={activeTab.query}
                   onClickSound={playClick}
                   mode={activeTab.mode!}
                   favoriteSongs={favoriteSongs}

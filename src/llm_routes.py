@@ -82,22 +82,24 @@ def register_chat_route(app, song_search):
     def rag():
         data = request.get_json() or {}
         user_query = (data.get("query") or "").strip()
+        skip_expansion = data.get("skip_expansion", False)
+        
         if not user_query:
             return jsonify({"error": "Query is required"}), 400
 
         api_key = os.getenv("SPARK_API_KEY")
         if not api_key:
-            return jsonify({"error": "SPARK_API_KEY not set — add it to your .env file"}), 500
+            return jsonify({"error": "SPARK_API_KEY not set"}), 500
 
         client = LLMClient(api_key=api_key)
 
-        # Step 1: LLM expands user input into IR-friendly descriptive words
-        expanded_query = llm_expand_query(client, user_query)
+        # skip expansion for SVD mode
+        if skip_expansion:
+            expanded_query = user_query
+        else:
+            expanded_query = llm_expand_query(client, user_query)
 
-        # Step 2: IR retrieves songs using the expanded query
         songs = song_search(expanded_query)
-
-        # Step 3: LLM describes each song in context of the original user request
         descriptions = llm_describe_songs(client, user_query, songs)
 
-        return jsonify({"songs": songs, "descriptions": descriptions})
+        return jsonify({"songs": songs, "descriptions": descriptions, "expanded_query": expanded_query})
