@@ -5,13 +5,15 @@ import { FaSpotify } from 'react-icons/fa'
 import clickFile from './assets/click.mp3'
 import errorFile from './assets/eror.mp3'
 import selectFile from './assets/select.mp3'
-import middleFile from './assets/error_005.ogg'
+import middleFile from './assets/minimize.wav'
 import boomFile from './assets/vine-boom.mp3'
 import transportFile from './assets/click.wav'
 import confirmFile from './assets/confirmation_002.ogg'
+import closeFile from './assets/closesound.wav'
 import heartFile from './assets/heart.ogg'
 import { BsSkipBackwardFill, BsSkipStartFill, BsSkipEndFill, BsSkipForwardFill, BsFillPlayFill, BsFillPauseFill, BsSuitHeartFill, BsVolumeUpFill, BsVolumeMuteFill, BsVolumeDownFill } from 'react-icons/bs'
 import { CursorTrail } from './CursorTrail'
+import { forwardRef } from 'react' 
 
 type TabType = 'home' | 'setup' | 'search'
 type SearchMode = 'tfidf' | 'svd' | 'rag'
@@ -344,7 +346,7 @@ function playSelect() {
 }
 function playMiddle() {
   if (isMuted) return
-  const audio = new Audio(middleFile); audio.volume = 0.8; audio.play().catch(() => {})
+  const audio = new Audio(middleFile); audio.volume = 0.5; audio.play().catch(() => {})
 }
 function playBoom() {
   if (isMuted) return
@@ -358,6 +360,12 @@ function playHeart() {
   if (isMuted) return
   const audio = new Audio(heartFile); audio.volume = 0.2; audio.play().catch(() => {})
 }
+
+function playClosed() {
+  if (isMuted) return
+  const audio = new Audio(closeFile); audio.volume = 0.2; audio.play().catch(() => {})
+}
+
 
 function MuteButton() {
   const [muted, setMutedState] = useState(isMuted)
@@ -386,12 +394,19 @@ async function fetchTrackData(artist: string, title: string): Promise<{ art: str
 
 // ─── How It Works Modal ───────────────────────────────────────────────────────
 
-function HowItWorksModal({ onClose }: { onClose: () => void }) {
+const HowItWorksModal = forwardRef<HTMLDivElement, { onClose: () => void }>(
+  function HowItWorksModal({ onClose }, ref) {
+    const [closing, setClosing] = useState(false)
+
+    const handleClose = () => {
+      setClosing(true)
+      setTimeout(() => onClose(), 300)
+    }
   return (
-    <div className="hiw-inline">
+    <div className={`hiw-inline ${closing ? 'closing' : ''}`} ref={ref}>
       <div className="hiw-inline-header">
         <span className="hiw-inline-title">✦ how lyra finds your songs ✦</span>
-        <button className="hiw-inline-close" onClick={onClose}>✕</button>
+        <button className="hiw-inline-close" onClick={() => {playClosed();handleClose()}}>✕</button>
       </div>
       <div className="hiw-body">
         <p className="hiw-intro">
@@ -438,7 +453,7 @@ function HowItWorksModal({ onClose }: { onClose: () => void }) {
       </div>
     </div>
   )
-}
+})
 
 // ─── App ──────────────────────────────────────────────────────────────────────
 
@@ -470,6 +485,7 @@ function App(): JSX.Element {
   const [statusIdx, setStatusIdx] = useState(0)
   const [subIdx, setSubIdx] = useState(0)
   const [showHiw, setShowHiw] = useState(false)
+  const hiwRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (!activeTab.loading) return
@@ -616,14 +632,23 @@ function App(): JSX.Element {
             <div>
               <header className="hero">
                 <h1>Lyra</h1>
-                <p>spill your feelings ✦ we'll find the perfect song ♪</p>
+                <p>spill your feelings ✦ we'll find the perfect song ♫</p>
               </header>
               <div className="home-btn-wrap">
                 <button className="home-find-btn" onClick={() => { playClick(); addTab() }}>find my song →</button>
-                <button className="hiw-trigger-btn" onClick={() => { playClick(); setShowHiw(p => !p) }}>
+                <button className="hiw-trigger-btn" onClick={() => {
+                  playTransform()
+                  setShowHiw(p => {
+                    if (!p) setTimeout(() => hiwRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50)
+                    return !p
+                  })
+                }}>
                   ✦ how does it work? ✦
                 </button>
-                {showHiw && <HowItWorksModal onClose={() => setShowHiw(false)} />}
+                {showHiw && <HowItWorksModal ref={hiwRef} onClose={() => {
+                  window.scrollTo({ top: 0, behavior: 'smooth' })
+                  setTimeout(() => setShowHiw(false), 300)
+                }} />}
               </div>
               {favoriteSongs.length > 0 && (
                 <div className="favorites-wrap">
