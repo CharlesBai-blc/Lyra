@@ -2184,12 +2184,11 @@ body::before {
   letter-spacing: 0.06em;
   padding-top: 4px;
 }
-
 .hiw-trigger-btn {
   font-family: 'VT323', monospace;
   font-size: 17px;
   letter-spacing: 0.12em;
-  padding: 0;
+  padding: 4px 12px;
   cursor: pointer;
   background: transparent;
   border: none;
@@ -2197,19 +2196,131 @@ body::before {
   box-shadow: none;
   animation: fadeUp 0.6s ease 0.45s both;
   opacity: 0.75;
-  transition: opacity 0.2s ease, color 0.2s ease;
+  transition: opacity 0.2s ease, color 0.2s ease, text-shadow 0.2s ease, background 0.2s ease;
+  image-rendering: pixelated;
+  display: inline-block;
+  line-height: 1;
 }
 
 .hiw-trigger-btn:hover {
-  background: transparent;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 1px,
+    rgba(180, 120, 210, 0.07) 1px,
+    rgba(180, 120, 210, 0.07) 2px
+  ),
+  repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 1px,
+    rgba(180, 120, 210, 0.05) 1px,
+    rgba(180, 120, 210, 0.05) 2px
+  );
   border: none;
   box-shadow: none;
   color: #8860b0;
   opacity: 1;
+  text-shadow:
+    1px 0px 0 #d988b966,
+    -1px 0px 0 #7ec8e366,
+    0px 1px 0 #b59fdd44;
 }
 
 .hiw-trigger-btn:active {
   transform: none;
   box-shadow: none;
   color: #534AB7;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 1px,
+    rgba(140, 90, 180, 0.13) 1px,
+    rgba(140, 90, 180, 0.13) 2px
+  ),
+  repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 1px,
+    rgba(140, 90, 180, 0.1) 1px,
+    rgba(140, 90, 180, 0.1) 2px
+  );
+  text-shadow:
+    2px 0px 0 #d988b999,
+    -2px 0px 0 #7ec8e399,
+    0px 2px 0 #b59fdd66;
+}
+/* formula fonts in hiw */
+.hiw-formula {
+  margin-top: 10px;
+  padding: 6px 12px;
+  font-family: 'VT323', monospace;
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  color: #8265b7;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 1px,
+    rgba(180, 120, 210, 0.05) 1px,
+    rgba(180, 120, 210, 0.05) 2px
+  );
+  border-left: 2px solid #d988b966;
+  border-radius: 0 4px 4px 0;
+}
+/* song feature info buttons*/
+.feat-info-wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.feat-info-btn {
+  font-family: 'Pixelify Sans', sans-serif;
+  font-size: 10px;
+  width: 14px;
+  height: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(232, 230, 255, 0.5);
+  border: 1px solid rgba(176, 168, 232, 0.4);
+  border-radius: 50%;
+  color: rgba(90, 82, 176, 0.6);
+  box-shadow: none;
+  cursor: default;
+  user-select: none;
+  line-height: 1;
+  padding: 0;
+  padding-top: 1px;
+  top: 0;
+}
+
+.feat-tooltip {
+  position: absolute;
+  left: calc(100% + 8px);
+  top: 0;
+  width: 200px;
+  padding: 10px 12px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-style: italic;
+  line-height: 1.6;
+  color: #4a4060;
+  background: linear-gradient(135deg, rgba(232, 214, 245, 0.6), rgba(212, 232, 245, 0.55));
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(176, 168, 232, 0.25);
+  border-radius: 8px;
+  box-shadow:
+    0 0 12px rgba(217, 136, 185, 0.2),
+    0 0 24px rgba(176, 168, 232, 0.15),
+    2px 2px 0 #8880cc;
+  z-index: 50;
+  pointer-events: none;
+  animation: card2-float 4s ease-in-out infinite;
+}
+
+@keyframes card2-float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-2px); }
 }

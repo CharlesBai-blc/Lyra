@@ -31,9 +31,18 @@ interface Tab {
   expandedQuery: string
 }
 
+const featureInfo: Record<string, string> = {
+  Danceability: "how easy it is to dance to the song — steady beat, clear rhythm, and groove",
+  Energy: "how intense the song feels - from calm and soft to loud, fast, and aggressive",
+  Valence: "the mood of the song. low feels sad or dark, high feels happy or bright",
+  Tempo: "how fast the song is - measured in beats per minute (BPM)"
+}
+
+
 function FeatureBar({ label, value, max, color, display }: {
   label: string; value: number; max: number; color: string; display?: string
 }) {
+  const [showTip, setShowTip] = useState(false)
   const pct = Math.round((value / max) * 100)
 
   function getLabel(label: string, v: number) {
@@ -57,7 +66,19 @@ function FeatureBar({ label, value, max, color, display }: {
 
   return (
     <div className="feat">
-      <span className="feat-label">{label}</span>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+        <span className="feat-label">{label}</span>
+        <div
+          className="feat-info-wrap"
+          onMouseEnter={() => setShowTip(true)}
+          onMouseLeave={() => setShowTip(false)}
+        >
+          <span className="feat-info-btn">i</span>
+          {showTip && (
+            <div className="feat-tooltip">{featureInfo[label]}</div>
+          )}
+        </div>
+      </div>
       <div className="feat-bar-bg">
         <div className="feat-bar-fill"
           style={{width: `${pct}%`, background: color, opacity: 0.4 + 0.6 * (value / max)}}
@@ -421,14 +442,17 @@ const HowItWorksModal = forwardRef<HTMLDivElement, { onClose: () => void }>(
           {
             chip: 'TF-IDF', name: 'keyword matching', badge: 'fastest', badgeClass: 'hiw-badge-fast',
             steps: ['tokenises your query into keywords', 'rare emotional words score higher', 'songs ranked by lyric overlap'],
+            formula: null,
           },
           {
             chip: 'SVD', name: 'vibe shape matching', badge: 'smarter', badgeClass: 'hiw-badge-smart',
             steps: ['maps your words to emotion anchors', '"dissolving" → "numb, drifting, detached"', 'matches songs by emotional shape + audio features'],
+            formula: 'Formula: 65% tfidf  ✦  20% audio  ✦  15% svd',
           },
           {
             chip: 'RAG', name: 'AI-powered search', badge: 'deepest', badgeClass: 'hiw-badge-deep',
             steps: ['TF-IDF + SVD fetch a candidate pool', 'an LLM reasons over each song', 'returns results + a personalised why-it-fits blurb'],
+            formula: 'Formula: 65% tfidf  ✦  20% audio  ✦  15% svd  →  LLM rerank',
           },
         ].map(m => (
           <div className="hiw-section" key={m.chip}>
@@ -446,6 +470,9 @@ const HowItWorksModal = forwardRef<HTMLDivElement, { onClose: () => void }>(
                   </div>
                 ))}
               </div>
+              {m.formula && (
+                <div className="hiw-formula">{m.formula}</div>
+              )}
             </div>
           </div>
         ))}
