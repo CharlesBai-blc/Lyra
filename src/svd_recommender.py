@@ -22,6 +22,10 @@ import numpy as np
 TOKEN_RE = re.compile(r"[a-zA-Z']+")
  
 AUDIO_SCALE = 8.0
+# blend weights for final score (keep in sync with frontend ScoreRevealBadge)
+SCORE_BLEND_W_TF_IDF = 0.65
+SCORE_BLEND_W_MUSIC = 0.20
+SCORE_BLEND_W_SVD = 0.15
 MAX_VOCAB = 3000
 N_COMPONENTS = 40
 CANDIDATE_POOL = 200
@@ -550,17 +554,23 @@ class SvdSongRecommender:
             if hint is not None and idx is not None:
                 dist = _audio_distance(self.song_audio[idx], hint)
                 audio_sim = max(0.0, 1.0 - dist * 2.0)
- 
-            final = 0.65 * tfidf_norm + 0.20 * audio_sim + 0.15 * svd_sim
- 
+
+            part_tfidf = SCORE_BLEND_W_TF_IDF * tfidf_norm
+            part_music = SCORE_BLEND_W_MUSIC * audio_sim
+            part_svd = SCORE_BLEND_W_SVD * svd_sim
+            final = part_tfidf + part_music + part_svd
+
             final += 0.15 * sentiment * self.songs[idx].valence
- 
+
             if sentiment < -0.3:
                 final -= 0.1 * self.songs[idx].valence
             elif sentiment > 0.3:
                 final += 0.1 * self.songs[idx].valence
- 
+
             final = max(0.0, min(1.0, final))
+            r["score_blend_tfidf"] = part_tfidf
+            r["score_blend_music"] = part_music
+            r["score_blend_svd"] = part_svd
             scored.append((final, r))
  
         scored.sort(key=lambda x: x[0], reverse=True)
@@ -569,6 +579,10 @@ class SvdSongRecommender:
         for final_score, r in scored[:top_k]:
             r = dict(r)
             r["tfidf_score"] = round(final_score, 5)
+            # weighted summands right before sentiment tweaks (same names JSON → UI)
+            r["score_blend_tfidf"] = round(r.get("score_blend_tfidf", 0.0), 5)
+            r["score_blend_music"] = round(r.get("score_blend_music", 0.0), 5)
+            r["score_blend_svd"] = round(r.get("score_blend_svd", 0.0), 5)
             out.append(r)
  
         # print(f"[DEBUG] top 3 results: {[r['title'] for r in out[:3]]}")

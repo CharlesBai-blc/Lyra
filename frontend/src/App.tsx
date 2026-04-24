@@ -18,6 +18,16 @@ import { forwardRef } from 'react'
 type TabType = 'home' | 'setup' | 'search'
 type SearchMode = 'tfidf' | 'svd' | 'rag'
 
+/** Must match svd_recommender.SCORE_BLEND_* */
+const SCORE_BLEND_W_TF_IDF = 0.65
+const SCORE_BLEND_W_MUSIC = 0.20
+const SCORE_BLEND_W_SVD = 0.15
+
+function blendSlotPct(part: number | undefined, weight: number): number {
+  if (part == null || weight <= 0) return 0
+  return Math.min(100, Math.max(0, (part / weight) * 100))
+}
+
 interface Tab {
   id: string
   label: string
@@ -94,8 +104,18 @@ function FeatureBar({ label, value, max, color, display }: {
   )
 }
 
-function ScoreRevealBadge({ mode }: { mode: SearchMode }) {
+function ScoreRevealBadge({ mode, song }: { mode: SearchMode; song: SongRecommendation }) {
   const [open, setOpen] = useState(false)
+  const hasBlend =
+    song.score_blend_tfidf != null &&
+    song.score_blend_music != null &&
+    song.score_blend_svd != null
+  const pt = song.score_blend_tfidf ?? 0
+  const pm = song.score_blend_music ?? 0
+  const ps = song.score_blend_svd ?? 0
+  const pctT = blendSlotPct(song.score_blend_tfidf, SCORE_BLEND_W_TF_IDF)
+  const pctM = blendSlotPct(song.score_blend_music, SCORE_BLEND_W_MUSIC)
+  const pctS = blendSlotPct(song.score_blend_svd, SCORE_BLEND_W_SVD)
 
   return (
     <div className="score-reveal-wrap">
@@ -112,23 +132,45 @@ function ScoreRevealBadge({ mode }: { mode: SearchMode }) {
             <div className="score-popup-row">
               <span className="score-popup-label">tfidf</span>
               <div className="score-popup-bar-bg">
-                <div className="score-popup-bar-fill" style={{ width: '65%', background: '#d988b9' }} />
+                <div
+                  className="score-popup-bar-fill"
+                  style={{ width: `${hasBlend ? pctT : 0}%`, background: '#d988b9' }}
+                />
               </div>
-              <span className="score-popup-pct">65%</span>
+              <span className="score-popup-pct">{hasBlend ? pt.toFixed(3) : '—'}</span>
             </div>
             <div className="score-popup-row">
               <span className="score-popup-label">music</span>
               <div className="score-popup-bar-bg">
-                <div className="score-popup-bar-fill" style={{ width: '20%', background: '#7ec8e3' }} />
+                <div
+                  className="score-popup-bar-fill"
+                  style={{ width: `${hasBlend ? pctM : 0}%`, background: '#7ec8e3' }}
+                />
               </div>
-              <span className="score-popup-pct">20%</span>
+              <span className="score-popup-pct">{hasBlend ? pm.toFixed(3) : '—'}</span>
             </div>
             <div className="score-popup-row">
               <span className="score-popup-label">svd</span>
               <div className="score-popup-bar-bg">
-                <div className="score-popup-bar-fill" style={{ width: '15%', background: '#b59fdd' }} />
+                <div
+                  className="score-popup-bar-fill"
+                  style={{ width: `${hasBlend ? pctS : 0}%`, background: '#b59fdd' }}
+                />
               </div>
-              <span className="score-popup-pct">15%</span>
+              <span className="score-popup-pct">{hasBlend ? ps.toFixed(3) : '—'}</span>
+            </div>
+            <div className="score-popup-row score-popup-row-total">
+              <span className="score-popup-label">total</span>
+              <div className="score-popup-bar-bg score-popup-bar-total">
+                <div
+                  className="score-popup-bar-fill"
+                  style={{
+                    width: `${Math.min(100, Math.max(0, song.tfidf_score * 100))}%`,
+                    background: '#c4a574',
+                  }}
+                />
+              </div>
+              <span className="score-popup-pct">{song.tfidf_score.toFixed(3)}</span>
             </div>
           </div>
         </div>
@@ -253,7 +295,10 @@ function WinampPlayer({ songs, descriptions, onClickSound, mode, favoriteSongs, 
                 {mode === 'tfidf' ? (
                   <span className="score-badge">{song.tfidf_score.toFixed(3)} match</span>
                 ) : (
-                  <ScoreRevealBadge mode={mode}/>
+                  <div className="winamp-score-row-svd" style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                    <span className="score-badge">{song.tfidf_score.toFixed(3)} match</span>
+                    <ScoreRevealBadge mode={mode} song={song} />
+                  </div>
                 )}
                 <a className="spotify-btn" href={song.spotify_url} target="_blank" rel="noreferrer" onClick={onClickSound}>
                   <FaSpotify />
