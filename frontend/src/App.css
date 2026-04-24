@@ -245,6 +245,7 @@ body::before {
   padding: 3px 12px;
   box-shadow: 2px 2px 0 #5a8aaa;
   letter-spacing: 0.05em;
+  user-select: none;
 }
 
 
@@ -361,7 +362,7 @@ body::before {
 
   background: rgba(183, 112, 230, 0.323);
   border: 2px solid rgba(127, 119, 221, 0.6);
-  color: #824ab7;
+  color: #5e3188;
   box-shadow: 2px 2px 0 #8880cc;
   text-decoration: none;
 
@@ -370,6 +371,7 @@ body::before {
 
   overflow: hidden;
   isolation: isolate;
+  user-select: none;
 }
 
 .spotify-btn:hover {
