@@ -571,7 +571,7 @@ function App(): JSX.Element {
               <div className="mode-picker-card">
                 <p className="mode-picker-heading">choose a search mode</p>
                 <div className="mode-picker-opts">
-                  {(['rag', 'tfidf', 'svd'] as SearchMode[]).map(m => (
+                  {(['tfidf', 'svd', 'rag'] as SearchMode[]).map(m => (
                     <button
                       key={m}
                       className={`retro-btn ${activeTab.mode === m ? 'active' : ''}`}
