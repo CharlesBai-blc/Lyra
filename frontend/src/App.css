@@ -262,6 +262,8 @@ body::before {
   align-items: center;
   height: 30px;
   vertical-align: middle;
+  cursor: pointer;
+  user-select: none;
 }
 
 .score-badge-interactive:hover {
@@ -302,7 +304,7 @@ body::before {
   padding: 10px 12px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 2px;
 }
 
 .score-popup-row {

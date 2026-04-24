@@ -15,6 +15,34 @@ import { BsSkipBackwardFill, BsSkipStartFill, BsSkipEndFill, BsSkipForwardFill, 
 import { CursorTrail } from './CursorTrail'
 import { forwardRef } from 'react' 
 
+const soundCache: Record<string, HTMLAudioElement> = {}
+
+function preloadSound(file: string, volume: number) {
+  const audio = new Audio(file)
+  audio.volume = volume
+  audio.load() // tells browser to fetch & buffer it now
+  soundCache[file] = audio
+}
+
+preloadSound(clickFile, 0.4)
+preloadSound(errorFile, 0.35)
+preloadSound(selectFile, 0.6)
+preloadSound(transportFile, 0.4)
+preloadSound(middleFile, 0.6)
+preloadSound(boomFile, 0.5)
+preloadSound(confirmFile, 0.5)
+preloadSound(heartFile, 0.2)
+preloadSound(closeFile, 0.2)
+
+function playSound(file: string) {
+  if (isMuted) return
+  const audio = soundCache[file]
+  if (!audio) return
+  audio.currentTime = 0
+  audio.play().catch(() => {})
+}
+
+
 type TabType = 'home' | 'setup' | 'search'
 type SearchMode = 'tfidf' | 'svd' | 'rag'
 
@@ -394,41 +422,32 @@ function subscribeMute(fn: () => void) {
 }
 
 function playClick() {
-  if (isMuted) return
-  const audio = new Audio(clickFile); audio.volume = 0.4; audio.play().catch(() => {})
+  playSound(clickFile)
 }
 function playTransform() {
-  if (isMuted) return
-  const audio = new Audio(transportFile); audio.volume = 0.4; audio.play().catch(() => {})
+  playSound(transportFile)
 }
 function playError() {
-  if (isMuted) return
-  const audio = new Audio(errorFile); audio.volume = 0.35; audio.play().catch(() => {})
+  playSound(errorFile)  
 }
 function playSelect() {
-  if (isMuted) return
-  const audio = new Audio(selectFile); audio.volume = 0.6; audio.play().catch(() => {})
+  playSound(selectFile)
 }
 function playMiddle() {
-  if (isMuted) return
-  const audio = new Audio(middleFile); audio.volume = 0.5; audio.play().catch(() => {})
+  playSound(middleFile)
 }
 function playBoom() {
-  if (isMuted) return
-  const audio = new Audio(boomFile); audio.volume = 0.5; audio.play().catch(() => {})
+  playSound(boomFile)
 }
 function playConfirm() {
-  if (isMuted) return
-  const audio = new Audio(confirmFile); audio.volume = 0.5; audio.play().catch(() => {})
+  playSound(confirmFile)
 }
 function playHeart() {
-  if (isMuted) return
-  const audio = new Audio(heartFile); audio.volume = 0.2; audio.play().catch(() => {})
+  playSound(heartFile)
 }
 
 function playClosed() {
-  if (isMuted) return
-  const audio = new Audio(closeFile); audio.volume = 0.2; audio.play().catch(() => {})
+  playSound(closeFile)
 }
 
 
