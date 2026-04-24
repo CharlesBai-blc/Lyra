@@ -5,13 +5,15 @@ import { FaSpotify } from 'react-icons/fa'
 import clickFile from './assets/click.mp3'
 import errorFile from './assets/eror.mp3'
 import selectFile from './assets/select.mp3'
-import middleFile from './assets/error_005.ogg'
+import middleFile from './assets/minimize.wav'
 import boomFile from './assets/vine-boom.mp3'
 import transportFile from './assets/click.wav'
 import confirmFile from './assets/confirmation_002.ogg'
+import closeFile from './assets/closesound.wav'
 import heartFile from './assets/heart.ogg'
 import { BsSkipBackwardFill, BsSkipStartFill, BsSkipEndFill, BsSkipForwardFill, BsFillPlayFill, BsFillPauseFill, BsSuitHeartFill, BsVolumeUpFill, BsVolumeMuteFill, BsVolumeDownFill } from 'react-icons/bs'
 import { CursorTrail } from './CursorTrail'
+import { forwardRef } from 'react' 
 
 type TabType = 'home' | 'setup' | 'search'
 type SearchMode = 'tfidf' | 'svd' | 'rag'
@@ -26,6 +28,7 @@ interface Tab {
   descriptions: string[]
   error: string
   loading: boolean
+  expandedQuery: string
 }
 
 function FeatureBar({ label, value, max, color, display }: {
@@ -70,13 +73,58 @@ function FeatureBar({ label, value, max, color, display }: {
   )
 }
 
-function WinampPlayer({ songs, descriptions, onClickSound, mode, favoriteSongs, onToggleFavorite }: {
+function ScoreRevealBadge({ mode }: { mode: SearchMode }) {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <div className="score-reveal-wrap">
+      <span
+        className={`score-badge score-badge-interactive ${open ? 'active' : ''}`}
+        onClick={() => { playClick(); setOpen(p => !p) }}
+      >
+        {mode.toUpperCase()} Formula
+      </span>
+      {open && (
+        <div className="score-popup">
+          <div className="score-popup-titlebar">✦ match breakdown ✦</div>
+          <div className="score-popup-body">
+            <div className="score-popup-row">
+              <span className="score-popup-label">tfidf</span>
+              <div className="score-popup-bar-bg">
+                <div className="score-popup-bar-fill" style={{ width: '65%', background: '#d988b9' }} />
+              </div>
+              <span className="score-popup-pct">65%</span>
+            </div>
+            <div className="score-popup-row">
+              <span className="score-popup-label">music</span>
+              <div className="score-popup-bar-bg">
+                <div className="score-popup-bar-fill" style={{ width: '20%', background: '#7ec8e3' }} />
+              </div>
+              <span className="score-popup-pct">20%</span>
+            </div>
+            <div className="score-popup-row">
+              <span className="score-popup-label">svd</span>
+              <div className="score-popup-bar-bg">
+                <div className="score-popup-bar-fill" style={{ width: '15%', background: '#b59fdd' }} />
+              </div>
+              <span className="score-popup-pct">15%</span>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function WinampPlayer({ songs, descriptions, onClickSound, mode, favoriteSongs, onToggleFavorite, expandedQuery, query }: {
   songs: SongRecommendation[]
   descriptions: string[]
   onClickSound: () => void
   mode: SearchMode
   favoriteSongs: SongRecommendation[]
   onToggleFavorite: (song: SongRecommendation) => void
+  expandedQuery: string
+  query: string
 }) {
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -123,7 +171,6 @@ function WinampPlayer({ songs, descriptions, onClickSound, mode, favoriteSongs, 
     playTransform()
     f()
   }
-
   return (
     <div className="winamp-wrap">
       <div className="winamp-playlist">
@@ -166,17 +213,27 @@ function WinampPlayer({ songs, descriptions, onClickSound, mode, favoriteSongs, 
               <div className="winamp-card-header-text">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <div className="winamp-song-title">{song.title}</div>
-                  {descriptions[selectedIndex] && (
-                    <div className="rag-info-wrap">
-                      <span className="rag-info-btn">?</span>
-                      <div className="rag-tooltip">{descriptions[selectedIndex]}</div>
-                    </div>
-                  )}
                 </div>
                 <div className="winamp-song-meta">{cleanArtistName(song.artist)}  ✧  {song.album}</div>
+                {((mode === 'rag' || mode === 'svd') && descriptions[selectedIndex]) && (
+                  <div className="rag-info-wrap">
+                    <span className="rag-info-btn">?</span>
+                    <div className="rag-tooltip">
+                      <div className="rag-tooltip-query-label">✦ {mode === 'rag' ? 'modified query' : 'your query'} ✦</div>
+                      <div className="rag-tooltip-query-box">
+                        {mode === 'rag' ? expandedQuery : query}
+                      </div>
+                      <div className="rag-tooltip-desc">{descriptions[selectedIndex]}</div>
+                    </div>
+                  </div>
+                )}
               </div>
               <div className="winamp-score-row">
-                <span className="score-badge">{song.tfidf_score.toFixed(3)} match</span>
+                {mode === 'tfidf' ? (
+                  <span className="score-badge">{song.tfidf_score.toFixed(3)} match</span>
+                ) : (
+                  <ScoreRevealBadge mode={mode}/>
+                )}
                 <a className="spotify-btn" href={song.spotify_url} target="_blank" rel="noreferrer" onClick={onClickSound}>
                   <FaSpotify />
                   <span className="spotify-text">Spotify</span>
@@ -256,7 +313,7 @@ function WinampPlayer({ songs, descriptions, onClickSound, mode, favoriteSongs, 
   )
 }
 
-// ─── helpers ──────────────────────────────────────────────────────────────────
+// ----- helpers -----
 
 let isMuted = false
 try { isMuted = localStorage.getItem('lyra-muted') === '1' } catch {}
@@ -289,7 +346,7 @@ function playSelect() {
 }
 function playMiddle() {
   if (isMuted) return
-  const audio = new Audio(middleFile); audio.volume = 0.8; audio.play().catch(() => {})
+  const audio = new Audio(middleFile); audio.volume = 0.5; audio.play().catch(() => {})
 }
 function playBoom() {
   if (isMuted) return
@@ -303,6 +360,12 @@ function playHeart() {
   if (isMuted) return
   const audio = new Audio(heartFile); audio.volume = 0.2; audio.play().catch(() => {})
 }
+
+function playClosed() {
+  if (isMuted) return
+  const audio = new Audio(closeFile); audio.volume = 0.2; audio.play().catch(() => {})
+}
+
 
 function MuteButton() {
   const [muted, setMutedState] = useState(isMuted)
@@ -329,14 +392,21 @@ async function fetchTrackData(artist: string, title: string): Promise<{ art: str
   }
 }
 
-// ─── How It Works Modal ───────────────────────────────────────────────────────
+// how it works modal----
 
-function HowItWorksModal({ onClose }: { onClose: () => void }) {
+const HowItWorksModal = forwardRef<HTMLDivElement, { onClose: () => void }>(
+  function HowItWorksModal({ onClose }, ref) {
+    const [closing, setClosing] = useState(false)
+
+    const handleClose = () => {
+      setClosing(true)
+      setTimeout(() => onClose(), 300)
+    }
   return (
-    <div className="hiw-inline">
+    <div className={`hiw-inline ${closing ? 'closing' : ''}`} ref={ref}>
       <div className="hiw-inline-header">
         <span className="hiw-inline-title">✦ how lyra finds your songs ✦</span>
-        <button className="hiw-inline-close" onClick={onClose}>✕</button>
+        <button className="hiw-inline-close" onClick={() => {playClosed();handleClose()}}>✕</button>
       </div>
       <div className="hiw-body">
         <p className="hiw-intro">
@@ -383,16 +453,16 @@ function HowItWorksModal({ onClose }: { onClose: () => void }) {
       </div>
     </div>
   )
-}
+})
 
-// ─── App ──────────────────────────────────────────────────────────────────────
+// app -----------
 
 function App(): JSX.Element {
   const nextId = useRef(1)
 
   const makeHomeTab = (): Tab => ({
     id: 'home', label: 'home', type: 'home', mode: null,
-    query: '', songs: [], descriptions: [], error: '', loading: false,
+    query: '', songs: [], descriptions: [], expandedQuery: '', error: '', loading: false,
   })
 
   const [tabs, setTabs] = useState<Tab[]>([makeHomeTab()])
@@ -415,6 +485,7 @@ function App(): JSX.Element {
   const [statusIdx, setStatusIdx] = useState(0)
   const [subIdx, setSubIdx] = useState(0)
   const [showHiw, setShowHiw] = useState(false)
+  const hiwRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (!activeTab.loading) return
@@ -428,7 +499,7 @@ function App(): JSX.Element {
     const id = `tab-${nextId.current++}`
     setTabs(prev => [...prev, {
       id, label: 'new tab', type: 'setup', mode: null,
-      query: '', songs: [], descriptions: [], error: '', loading: false,
+      query: '', songs: [], descriptions: [], expandedQuery: '', error: '', loading: false,
     }])
     setActiveId(id)
   }
@@ -463,11 +534,33 @@ function App(): JSX.Element {
         const songs = data.songs ?? []
         updateTab(tabId, {
           songs, descriptions: data.descriptions ?? [],
+          expandedQuery: data.expanded_query ?? '',
           error: songs.length === 0 ? 'No matches found. Try different words.' : '',
           label: query.length > 14 ? query.slice(0, 14) + '…' : query,
         })
+      } else if (mode === 'svd') {
+          const [response, descResponse] = await Promise.all([
+            fetch(`/api/recommendations?query=${encodeURIComponent(query)}&top_k=10&mode=svd`),
+            fetch('/api/rag', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ query, top_k: 10, skip_expansion: true }),
+            })
+          ])
+          if (!response.ok) {
+            updateTab(tabId, { error: `Request failed (${response.status})`, songs: [] })
+            return
+          }
+          const data: SongRecommendation[] = await response.json()
+          const descriptions = descResponse.ok ? (await descResponse.json()).descriptions ?? [] : []
+          updateTab(tabId, {
+            songs: data,
+            descriptions,
+            error: data.length === 0 ? 'No matches found. Try adding more emotional keywords.' : '',
+            label: query.length > 14 ? query.slice(0, 14) + '…' : query,
+          })
       } else {
-        const response = await fetch(`/api/recommendations?query=${encodeURIComponent(query)}&top_k=10&mode=${mode}`)
+        const response = await fetch(`/api/recommendations?query=${encodeURIComponent(query)}&top_k=10&mode=tfidf`)
         if (!response.ok) {
           updateTab(tabId, { error: `Request failed (${response.status})`, songs: [] })
           return
@@ -539,14 +632,23 @@ function App(): JSX.Element {
             <div>
               <header className="hero">
                 <h1>Lyra</h1>
-                <p>drop your feelings here — we'll find the soundtrack.</p>
+                <p>spill your feelings ✦ we'll find the perfect song ♫</p>
               </header>
               <div className="home-btn-wrap">
                 <button className="home-find-btn" onClick={() => { playClick(); addTab() }}>find my song →</button>
-                <button className="hiw-trigger-btn" onClick={() => { playClick(); setShowHiw(p => !p) }}>
+                <button className="hiw-trigger-btn" onClick={() => {
+                  playTransform()
+                  setShowHiw(p => {
+                    if (!p) setTimeout(() => hiwRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50)
+                    return !p
+                  })
+                }}>
                   ✦ how does it work? ✦
                 </button>
-                {showHiw && <HowItWorksModal onClose={() => setShowHiw(false)} />}
+                {showHiw && <HowItWorksModal ref={hiwRef} onClose={() => {
+                  window.scrollTo({ top: 0, behavior: 'smooth' })
+                  setTimeout(() => setShowHiw(false), 300)
+                }} />}
               </div>
               {favoriteSongs.length > 0 && (
                 <div className="favorites-wrap">
@@ -565,7 +667,7 @@ function App(): JSX.Element {
             </div>
           )}
 
-          {/* ── SETUP ── */}
+{/* setup */}
           {activeTab.type === 'setup' && (
             <div className="mode-picker-wrap">
               <div className="mode-picker-card">
@@ -649,6 +751,8 @@ function App(): JSX.Element {
                 <WinampPlayer
                   songs={activeTab.songs}
                   descriptions={activeTab.descriptions}
+                  expandedQuery={activeTab.expandedQuery}
+                  query={activeTab.query}
                   onClickSound={playClick}
                   mode={activeTab.mode!}
                   favoriteSongs={favoriteSongs}

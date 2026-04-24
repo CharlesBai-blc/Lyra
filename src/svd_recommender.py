@@ -571,8 +571,8 @@ class SvdSongRecommender:
             r["tfidf_score"] = round(final_score, 5)
             out.append(r)
  
-        print(f"[DEBUG] top 3 results: {[r['title'] for r in out[:3]]}")
-        print(f"[DEBUG] audio hint: {hint}")
+        # print(f"[DEBUG] top 3 results: {[r['title'] for r in out[:3]]}")
+        # print(f"[DEBUG] audio hint: {hint}")
         return out
  
  
