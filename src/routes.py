@@ -1,8 +1,3 @@
-"""
-Routes for the 2nd prototype of Lyra.
-
-Note to self- ?mode=param compares the old TF-IDF against new SVD-based recommender with default being SVD.
-"""
 import os
 from flask import send_from_directory, request, jsonify
 

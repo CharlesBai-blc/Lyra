@@ -1,10 +1,3 @@
-"""
-SVD-based recommender for Lyra — prototype 2.
-Semantic embedding-based query rewriting: metaphorical/poetic inputs are
-mapped to emotion terms before TF-IDF + SVD matching, so raw tokens like
-"time" or "dissolving" don't pollute lyric search.
-Requires: pip install sentence-transformers
-"""
 from __future__ import annotations
  
 import csv
@@ -22,7 +15,6 @@ import numpy as np
 TOKEN_RE = re.compile(r"[a-zA-Z']+")
  
 AUDIO_SCALE = 8.0
-# blend weights for final score (keep in sync with frontend ScoreRevealBadge)
 SCORE_BLEND_W_TF_IDF = 0.65
 SCORE_BLEND_W_MUSIC = 0.20
 SCORE_BLEND_W_SVD = 0.15
@@ -112,7 +104,7 @@ AUDIO_HINTS: dict[str, list[float]] = {
     "empty":      [0.20, 0.20, 0.10, 0.30],
 }
  
-# Rich descriptive phrases for each anchor — gives the embedding model
+# Rich descriptive phrases for each anchor which gives the embedding model
 # enough semantic surface to match metaphorical/poetic queries against.
 ANCHOR_PHRASES: dict[str, str] = {
     "happy":       "feeling happy joyful cheerful upbeat",
@@ -150,7 +142,7 @@ NEG_WORDS = {
     "sad","grief","lonely","depressed","pain","empty","broken","hopeless","numb"
 }
  
-# words that are emotionally inert and should never anchor lyric matching
+# words that are emotionally useless and should never anchor lyric matching
 _STOP_TOKENS = {
     "i", "me", "my", "the", "a", "an", "is", "are", "was", "were", "be",
     "been", "being", "have", "has", "had", "do", "does", "did", "will",
@@ -168,12 +160,6 @@ _STOP_TOKENS = {
 # ---------------------------------------------------------------------------
  
 class SemanticAnchorEngine:
-    """
-    Embeds ANCHOR_PHRASES once at init. At query time:
-      - finds closest anchors by cosine similarity
-      - blends their audio profiles (for audio hint)
-      - returns their expansion terms (for query rewriting)
-    """
  
     def __init__(self) -> None:
         from sentence_transformers import SentenceTransformer
@@ -184,7 +170,6 @@ class SemanticAnchorEngine:
         self._anchor_embeddings = np.array(raw, dtype=np.float32)
  
     def query_anchors(self, query: str) -> list[tuple[str, float]]:
-        """Return [(anchor_key, cosine_similarity), ...] sorted descending."""
         q_emb = self._model.encode([query], normalize_embeddings=True)
         q_emb = np.array(q_emb, dtype=np.float32)[0]
         sims = self._anchor_embeddings @ q_emb
@@ -192,7 +177,6 @@ class SemanticAnchorEngine:
         return pairs
  
     def audio_hint(self, query: str) -> np.ndarray | None:
-        """Blend top-k anchor audio profiles weighted by cosine similarity."""
         pairs = self.query_anchors(query)
         hint_sum = np.zeros(4, dtype=np.float32)
         weight_sum = 0.0
@@ -207,16 +191,6 @@ class SemanticAnchorEngine:
         return hint_sum / weight_sum
  
     def rewrite_query(self, query: str) -> tuple[Counter, bool]:
-        """
-        Returns (token_weights, was_rewritten).
- 
-        If the top anchor similarity >= REWRITE_THRESHOLD, the query is treated
-        as metaphorical and raw tokens are REPLACED by emotion expansion terms.
-        Raw tokens that are also in the vocab as genuine emotion words are kept
-        at reduced weight so legitimate keyword queries still work.
- 
-        If below threshold, falls back to additive expansion (old behaviour).
-        """
         pairs = self.query_anchors(query)
         top_key, top_sim = pairs[0]
         weights: Counter = Counter()
@@ -224,7 +198,7 @@ class SemanticAnchorEngine:
         raw_tokens = [t for t in _tok(query) if t not in _STOP_TOKENS]
  
         if top_sim >= REWRITE_THRESHOLD:
-            # --- semantic rewrite: replace raw tokens with emotion terms ---
+            #semantic rewrite: replace raw tokens with emotion terms
             for anchor_key, sim in pairs[:TOP_ANCHORS]:
                 if sim < ANCHOR_THRESHOLD:
                     break
@@ -237,7 +211,7 @@ class SemanticAnchorEngine:
                             weights[et] += sim * 0.8
  
             # keep raw tokens ONLY if they're known emotion/expansion words
-            # (handles queries like "i feel sad and dissolving" — "sad" stays)
+            # (handles queries like "i feel sad and dissolving","sad" stays)
             all_emotion_words = set(EXPANSIONS.keys()) | set(AUDIO_HINTS.keys())
             for t in raw_tokens:
                 if t in all_emotion_words:
@@ -246,7 +220,7 @@ class SemanticAnchorEngine:
             return weights, True
  
         else:
-            # --- additive expansion: old behaviour, just augmented ---
+            #additive expansion
             for t in raw_tokens:
                 weights[t] += 1.0
                 if t in EXPANSIONS:
@@ -304,11 +278,6 @@ def _to_float(val: Any) -> float:
  
  
 def _weighted_query_counts(query: str) -> tuple[Counter, bool]:
-    """
-    Returns (token_weights, was_semantically_rewritten).
-    Delegates to SemanticAnchorEngine.rewrite_query when available,
-    falls back to plain token counting if model is unavailable.
-    """
     try:
         engine = _get_anchor_engine()
         return engine.rewrite_query(query)
@@ -337,7 +306,6 @@ def _sentiment_score(tokens: list[str]) -> float:
  
  
 def _randomized_svd(matrix: np.ndarray, k: int) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-    """Pure numpy randomized SVD. Returns U (n x k), S (k,), Vt (k x m)."""
     rng = np.random.default_rng(42)
     n, m = matrix.shape
     omega = rng.standard_normal((m, k + 10)).astype(np.float32)
@@ -358,7 +326,6 @@ def _normalize_rows(matrix: np.ndarray) -> np.ndarray:
  
  
 def _audio_hint_for_query(query: str) -> np.ndarray | None:
-    """Semantic audio hint, falls back to token matching."""
     try:
         engine = _get_anchor_engine()
         hint = engine.audio_hint(query)

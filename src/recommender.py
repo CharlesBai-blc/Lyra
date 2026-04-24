@@ -1,10 +1,3 @@
-"""
-TF-IDF song recommendation utilities.
-
-First-iteration prototype:
-- Build a TF-IDF index over song lyrics only.
-- Score user free-text emotion input against each song document.
-"""
 from __future__ import annotations
 
 import csv

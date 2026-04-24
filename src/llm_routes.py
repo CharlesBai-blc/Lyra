@@ -10,7 +10,6 @@ logger = logging.getLogger(__name__)
 
 
 def llm_expand_query(client, user_message):
-    """Use the LLM to shape the user's message into IR-friendly keywords."""
     messages = [
         {
             "role": "system",
@@ -40,7 +39,6 @@ def llm_expand_query(client, user_message):
 
 
 def llm_describe_songs(client, user_query, songs):
-    """Ask the LLM to describe each song in context of the user's request."""
     if not songs:
         return []
 
@@ -78,7 +76,6 @@ def llm_describe_songs(client, user_query, songs):
 
 
 def register_chat_route(app, song_search):
-    """Register the /api/rag endpoint. Called from routes.py."""
 
     @app.route("/api/rag", methods=["POST"])
     def rag():

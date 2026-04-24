@@ -18,7 +18,6 @@ import { forwardRef } from 'react'
 type TabType = 'home' | 'setup' | 'search'
 type SearchMode = 'tfidf' | 'svd' | 'rag'
 
-/** Must match svd_recommender.SCORE_BLEND_* */
 const SCORE_BLEND_W_TF_IDF = 0.65
 const SCORE_BLEND_W_MUSIC = 0.20
 const SCORE_BLEND_W_SVD = 0.15
