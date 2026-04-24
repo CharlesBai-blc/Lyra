@@ -18,7 +18,8 @@ def llm_expand_query(client, user_message):
                 "You are a search query optimizer for a music lyric search engine. "
                 "Given the user's input, rewrite it as a compact set of keywords that captures the mood, theme, and feeling — words likely to appear in matching song lyrics. "
                 "Rules:\n"
-                "- If the input is short (1-3 words), expand it into related descriptive words.\n"
+                "- If the input is short (1-3 words), expand it into closely related descriptive words. Be sure to include the original words in the expansion and don't stray too far"
+                +" from the original word meanings. \n"
                 "- If the input is long, distill it down to the most important mood and theme keywords.\n"
                 "- If the input references a cultural moment, feeling, or situation, translate it into the emotions and words a matching song would contain.\n"
                 "- Output only keywords, space-separated, no punctuation, no explanation. Aim for 5-10 words.\n"
@@ -26,6 +27,7 @@ def llm_expand_query(client, user_message):
                 "  'christmas' -> 'christmas winter festive merry cozy warm holiday joy'\n"
                 "  'shake off haters' -> 'shake confident carefree upbeat haters brushing off empowerment'\n"
                 "  'i want something that feels like a warm summer evening with friends laughing' -> 'summer warm evening friends joy laughter carefree nostalgic'"
+                "  'mad' -> 'angry aggressive frustrated bitter resentment rage furious vengeful'"
             ),
         },
         {"role": "user", "content": user_message},
