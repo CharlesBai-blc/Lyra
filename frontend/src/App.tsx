@@ -32,9 +32,9 @@ interface Tab {
 }
 
 const featureInfo: Record<string, string> = {
-  Danceability: "how easy it is to dance to the song — steady beat, clear rhythm, and groove",
+  Danceability: "how easy it is to dance to the song — a steady beat, clear rhythm, and lots of groove",
   Energy: "how intense the song feels - from calm and soft to loud, fast, and aggressive",
-  Valence: "the mood of the song. low feels sad or dark, high feels happy or bright",
+  Valence: "the mood of the song - low feels sad or dark, high feels happy or bright",
   Tempo: "how fast the song is - measured in beats per minute (BPM)"
 }
 
