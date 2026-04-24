@@ -514,7 +514,7 @@ const HowItWorksModal = forwardRef<HTMLDivElement, { onClose: () => void }>(
           },
           {
             chip: 'RAG', name: 'AI-powered search', badge: 'deepest', badgeClass: 'hiw-badge-deep',
-            steps: ['TF-IDF + SVD fetch a candidate pool', 'an LLM reasons over each song', 'returns results + a personalised why-it-fits blurb'],
+            steps: ['TF-IDF + SVD fetch a candidate pool', 'an LLM reasons over each song', 'returns results + a personalized why-it-fits blurb'],
             formula: 'Modified query → SVD formula → LLM song summary',
           },
         ].map(m => (
