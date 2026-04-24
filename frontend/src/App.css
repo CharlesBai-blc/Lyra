@@ -349,7 +349,7 @@ body::before {
   background: rgba(183, 112, 230, 0.323);
   border: 2px solid rgba(127, 119, 221, 0.6);  
   color: #824ab7;   
-  box-shadow: 2px 2px 0 #8880cc, inset 0 0 0 1px rgba(255,255,255,0.6);
+  box-shadow: 2px 2px 0 #8880cc;
   text-decoration: none;
 
   backdrop-filter: blur(10px);
