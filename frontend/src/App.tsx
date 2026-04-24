@@ -504,7 +504,7 @@ const HowItWorksModal = forwardRef<HTMLDivElement, { onClose: () => void }>(
         {[
           {
             chip: 'TF-IDF', name: 'keyword matching', badge: 'fastest', badgeClass: 'hiw-badge-fast',
-            steps: ['tokenises your query into keywords', 'rare emotional words score higher', 'songs ranked by lyric overlap'],
+            steps: ['tokenizes your query into keywords', 'rare emotional words score higher', 'songs ranked by lyric overlap'],
             formula: null,
           },
           {
