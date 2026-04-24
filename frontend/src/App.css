@@ -238,14 +238,15 @@ body::before {
 .score-badge {
   font-family: 'Pixelify Sans', sans-serif;
   font-size: 16px;
-  color: #8b3a6b;
-  background: linear-gradient(135deg, #fce4f3, #f7d4ed);
-  border: 2px solid #e8b4d8;
+  color: #2d5a7a;
+  background: linear-gradient(135deg, #d4f0ff, #e8d4ff);
+  border: 2px solid #7ab8d4;
   border-radius: 3px;
   padding: 3px 12px;
-  box-shadow: 2px 2px 0 #d4a0c4;
+  box-shadow: 2px 2px 0 #5a8aaa;
   letter-spacing: 0.05em;
 }
+
 
 .score-reveal-wrap {
   position: relative;
@@ -253,8 +254,18 @@ body::before {
 }
 
 .score-badge-interactive {
-  cursor: pointer;
-  user-select: none;
+  color: #6b2d8b;
+  background: linear-gradient(135deg, #f0d4ff, #fcd4f0);
+  border: 2px solid #c47fd4;
+  box-shadow: 2px 2px 0 #9b5ab8;
+  display: inline-flex;
+  align-items: center;
+  height: 30px;
+  vertical-align: middle;
+}
+
+.score-badge-interactive:hover {
+  background: linear-gradient(135deg, #e8c4ff, #fac4e8);
 }
 
 .score-badge-interactive:active {
@@ -339,16 +350,16 @@ body::before {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  padding: 5px 14px;
-  font-size: 17px;
+  height: 30px;
+  padding: 0 12px;
+  font-size: 16px;
   font-family: 'Pixelify Sans', sans-serif;
   letter-spacing: 0.05em;
   border-radius: 3px;
 
-
   background: rgba(183, 112, 230, 0.323);
-  border: 2px solid rgba(127, 119, 221, 0.6);  
-  color: #824ab7;   
+  border: 2px solid rgba(127, 119, 221, 0.6);
+  color: #824ab7;
   box-shadow: 2px 2px 0 #8880cc;
   text-decoration: none;
 
