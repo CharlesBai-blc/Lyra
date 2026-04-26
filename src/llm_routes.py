@@ -99,6 +99,41 @@ def register_chat_route(app, song_search):
             expanded_query = llm_expand_query(client, user_query)
 
         songs = song_search(expanded_query)
-        descriptions = llm_describe_songs(client, user_query, songs)
+        # descriptions = llm_describe_songs(client, user_query, songs)
+        summary = llm_summarize_results(client, user_query, songs)
 
-        return jsonify({"songs": songs, "descriptions": descriptions, "expanded_query": expanded_query})
+        return jsonify({
+            "songs": songs,
+            # "descriptions": descriptions,
+            "expanded_query": expanded_query,
+            "summary": summary  
+        })
+    
+
+def llm_summarize_results(client, user_query, songs):
+    if not songs:
+        return ""
+
+    song_list = "\n".join(
+        f"{i+1}. \"{s['title']}\" by {s['artist']} — {s['lyrics_preview']}"
+        for i, s in enumerate(songs)
+    )
+
+    messages = [
+        {
+            "role": "system",
+            "content": (
+                "You are a music assistant. Given a user's emotional request and a list of matching songs, "
+                "write a single cohesive paragraph (4-6 sentences) that summarizes why these songs were chosen as a collection. "
+                "Talk about the shared mood, themes, and emotional throughline across the results. "
+                "Don't list songs individually — speak about them as a curated set."
+            ),
+        },
+        {
+            "role": "user",
+            "content": f"User's request: {user_query}\n\nRetrieved songs:\n{song_list}",
+        },
+    ]
+
+    response = client.chat(messages)
+    return (response.get("content") or "").strip()

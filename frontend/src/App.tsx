@@ -11,9 +11,11 @@ import transportFile from './assets/click.wav'
 import confirmFile from './assets/confirmation_002.ogg'
 import closeFile from './assets/closesound.wav'
 import heartFile from './assets/heart.ogg'
+import listFile from './assets/list.ogg'
 import { BsSkipBackwardFill, BsSkipStartFill, BsSkipEndFill, BsSkipForwardFill, BsFillPlayFill, BsFillPauseFill, BsSuitHeartFill, BsVolumeUpFill, BsVolumeMuteFill, BsVolumeDownFill } from 'react-icons/bs'
 import { CursorTrail } from './CursorTrail'
 import { forwardRef } from 'react' 
+import bookIcon from './assets/book.svg'
 
 const soundCache: Record<string, HTMLAudioElement> = {}
 
@@ -28,11 +30,12 @@ preloadSound(clickFile, 0.4)
 preloadSound(errorFile, 0.35)
 preloadSound(selectFile, 0.6)
 preloadSound(transportFile, 0.4)
-preloadSound(middleFile, 0.7)
+preloadSound(middleFile, 0.4)
 preloadSound(boomFile, 0.5)
 preloadSound(confirmFile, 0.5)
 preloadSound(heartFile, 0.2)
 preloadSound(closeFile, 0.2)
+preloadSound(listFile, 0.3)
 
 function playSound(file: string) {
   if (isMuted) return
@@ -66,6 +69,7 @@ interface Tab {
   error: string
   loading: boolean
   expandedQuery: string
+  summary: string
 }
 
 const featureInfo: Record<string, string> = {
@@ -206,7 +210,7 @@ function ScoreRevealBadge({ mode, song }: { mode: SearchMode; song: SongRecommen
   )
 }
 
-function WinampPlayer({ songs, descriptions, onClickSound, mode, favoriteSongs, onToggleFavorite, expandedQuery, query }: {
+function WinampPlayer({ songs, descriptions, onClickSound, mode, favoriteSongs, onToggleFavorite, query }: {
   songs: SongRecommendation[]
   descriptions: string[]
   onClickSound: () => void
@@ -297,7 +301,7 @@ function WinampPlayer({ songs, descriptions, onClickSound, mode, favoriteSongs, 
             <div className="winamp-card-header-inner">
               <div className="winamp-album-art-wrap">
                 {artUrl && (
-                  <img className="winamp-album-art" src={artUrl} alt={`${song.title} cover`} />
+                  <img className="winamp-album-art" src={artUrl} />
                 )}
               </div>
               <div className="winamp-card-header-text">
@@ -305,15 +309,24 @@ function WinampPlayer({ songs, descriptions, onClickSound, mode, favoriteSongs, 
                   <div className="winamp-song-title">{song.title}</div>
                 </div>
                 <div className="winamp-song-meta">{cleanArtistName(song.artist)}  ✧  {song.album}</div>
-                {((mode === 'rag' || mode === 'svd') && descriptions[selectedIndex]) && (
+                {/* {(mode === 'rag' || mode === 'svd') && ( */}
+                {(mode === 'svd') && (
                   <div className="rag-info-wrap">
                     <span className="rag-info-btn">?</span>
                     <div className="rag-tooltip">
-                      <div className="rag-tooltip-query-label">✦ {mode === 'rag' ? 'modified query' : 'your query'} ✦</div>
+                      <div className="rag-tooltip-query-label">✦ your query ✦</div>
                       <div className="rag-tooltip-query-box">
-                        {mode === 'rag' ? expandedQuery : query}
+                        {query}
                       </div>
-                      <div className="rag-tooltip-desc">{descriptions[selectedIndex]}</div>
+                      <div className="rag-tooltip-desc">
+                        {descriptions[selectedIndex] ? descriptions[selectedIndex] : (
+                          <div className="song-summary-ghost">
+                            <div className="song-summary-ghost-line" style={{ width: '92%' }} />
+                            <div className="song-summary-ghost-line" style={{ width: '85%' }} />
+                            <div className="song-summary-ghost-line" style={{ width: '75%' }} />
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 )}
@@ -367,18 +380,16 @@ function WinampPlayer({ songs, descriptions, onClickSound, mode, favoriteSongs, 
         <div className="winamp-controls">
           <button
             className={`wc-btn wc-heart ${favoriteSongs.find(s => s.id === song.id) ? 'active' : ''}`}
-            onClick={() => { playHeart(); onToggleFavorite(song) }}
-            title="favorite"
-          >
+            onClick={() => { playHeart(); onToggleFavorite(song) }}>
             <BsSuitHeartFill size={14} />
           </button>
-          <button className="wc-btn" onClick={withTransform(() => goTo(0))} title="first"><BsSkipBackwardFill size={16} /></button>
-          <button className="wc-btn" onClick={withTransform(prev)} title="prev" disabled={selectedIndex === 0}><BsSkipStartFill size={16} /></button>
-          <button className="wc-btn wc-play" onClick={togglePlay} title={isPlaying ? 'pause' : 'play'}>
+          <button className="wc-btn" onClick={withTransform(() => goTo(0))}><BsSkipBackwardFill size={16} /></button>
+          <button className="wc-btn" onClick={withTransform(prev)} disabled={selectedIndex === 0}><BsSkipStartFill size={16} /></button>
+          <button className="wc-btn wc-play" onClick={togglePlay}>
             {isPlaying ? <BsFillPauseFill size={20} /> : <BsFillPlayFill size={20} />}
           </button>
-          <button className="wc-btn" onClick={withTransform(next)} title="next" disabled={selectedIndex === songs.length - 1}><BsSkipEndFill size={16} /></button>
-          <button className="wc-btn" onClick={withTransform(() => goTo(songs.length - 1))} title="last"><BsSkipForwardFill size={16} /></button>
+          <button className="wc-btn" onClick={withTransform(next)} disabled={selectedIndex === songs.length - 1}><BsSkipEndFill size={16} /></button>
+          <button className="wc-btn" onClick={withTransform(() => goTo(songs.length - 1))}><BsSkipForwardFill size={16} /></button>
           <div className="wc-volume-wrap">
             <button className={`wc-btn ${showVolume ? 'active' : ''}`} onClick={withTransform(() => setShowVolume(p => !p))}>
               {volume === 0 ? <BsVolumeMuteFill size={14} /> : volume < 0.5 ? <BsVolumeDownFill size={14} /> : <BsVolumeUpFill size={18} />}
@@ -448,6 +459,10 @@ function playHeart() {
 
 function playClosed() {
   playSound(closeFile)
+}
+
+function playListSound() {
+  playSound(listFile)
 }
 
 
@@ -545,6 +560,78 @@ const HowItWorksModal = forwardRef<HTMLDivElement, { onClose: () => void }>(
   )
 })
 
+// ---- glitch in home ----
+
+function GlitchBackground() {
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+
+    const canv = canvas
+    const cx = ctx
+
+    canvas.width = canvas.offsetWidth
+    canvas.height = canvas.offsetHeight
+
+    const colors = ['#ff4fd8', '#6df0ff', '#ffde59', '#ff477e', '#c724b1']
+
+    function drawGlitch() {
+      cx.clearRect(0, 0, canv.width, canv.height)
+
+      const slices = 2 + Math.floor(Math.random() * 3)  // fewer: 2-4 instead of 3-6
+      for (let i = 0; i < slices; i++) {
+        const y = Math.random() * canv.height
+        const h = 1 + Math.random() * 5                  // thinner: max 3px not 6px
+        const w = 20 + Math.random() * 120               // shorter: max 120px not 240px
+        const x = Math.random() * (canv.width - w)
+        const color = colors[Math.floor(Math.random() * colors.length)]
+        cx.globalAlpha = 0.08 + Math.random() * 0.15    // much more transparent
+        cx.fillStyle = color
+        cx.fillRect(x, y, w, h)
+      }
+      cx.globalAlpha = 1
+    }
+
+    // fire a burst then go quiet, repeat
+    function burst() {
+      let ticks = 0
+      const max = 4 + Math.floor(Math.random() * 5)
+      const interval = setInterval(() => {
+        drawGlitch()
+        ticks++
+        if (ticks >= max) {
+          clearInterval(interval)
+          cx.clearRect(0, 0, canv.width, canv.height)
+          // wait 2–6s before next burst
+          setTimeout(burst, 2000 + Math.random() * 4000)
+        }
+      }, 60)
+    }
+
+    burst()
+
+    return () => ctx.clearRect(0, 0, canvas.width, canvas.height)
+  }, [])
+
+  return (
+    <canvas
+      ref={canvasRef}
+      style={{
+        position: 'absolute',
+        inset: 0,
+        width: '100%',
+        height: '100%',
+        pointerEvents: 'none',
+        zIndex: -1,
+      }}
+    />
+  )
+}
+
 // app -----------
 
 function App(): JSX.Element {
@@ -552,7 +639,8 @@ function App(): JSX.Element {
 
   const makeHomeTab = (): Tab => ({
     id: 'home', label: 'home', type: 'home', mode: null,
-    query: '', songs: [], descriptions: [], expandedQuery: '', error: '', loading: false,
+    query: '', songs: [], descriptions: [], expandedQuery: '', 
+    error: '', loading: false, summary: ''
   })
 
   const [tabs, setTabs] = useState<Tab[]>([makeHomeTab()])
@@ -566,6 +654,42 @@ function App(): JSX.Element {
         ? prev.filter(s => s.id !== song.id)
         : [...prev, song]
     )
+  }
+
+  const [showPresets, setShowPresets] = useState(false)
+
+  const presetQueries = [
+    "soft sadness with warm memories",
+    "late night overthinking energy",
+    "like i'm healing but not there yet",
+    "nostalgic but calm",
+    "feeling like crying in the shower",
+    "like the main character walking",
+    "sad but make it danceable",
+    "summer heartbreak",
+    "3am can't sleep",
+    "falling in love for the first time",
+    "revenge glow up era",
+    "like i'm missing someone but smiling anyway",
+    "nostalgic for something i never had",
+    "dancing alone in my room",
+    "everything is fine but it's not",
+  ]
+  // rag summary minimized or not
+  const [summaryMinimized, setSummaryMinimized] = useState(false)
+
+  const summaryHeaderRef = useRef<HTMLDivElement>(null)
+  const [frozenBg, setFrozenBg] = useState<string | null>(null)
+
+  const toggleSummary = () => {
+    if (!summaryMinimized && summaryHeaderRef.current) {
+      const pos = getComputedStyle(summaryHeaderRef.current).backgroundPosition
+      setFrozenBg(pos)
+    } else {
+      setFrozenBg(null)
+    }
+    playListSound();
+    setSummaryMinimized(p => !p)
   }
 
   const cleanArtistName = (artist: string) => artist.replace(/[\[\]']/g, '')
@@ -589,7 +713,8 @@ function App(): JSX.Element {
     const id = `tab-${nextId.current++}`
     setTabs(prev => [...prev, {
       id, label: 'new tab', type: 'setup', mode: null,
-      query: '', songs: [], descriptions: [], expandedQuery: '', error: '', loading: false,
+      query: '', songs: [], descriptions: [], expandedQuery: '',
+      error: '', loading: false, summary: ''
     }])
     setActiveId(id)
   }
@@ -622,33 +747,46 @@ function App(): JSX.Element {
         }
         const data = await response.json()
         const songs = data.songs ?? []
+
+        // show songs immediately
         updateTab(tabId, {
-          songs, descriptions: data.descriptions ?? [],
+          songs,
           expandedQuery: data.expanded_query ?? '',
           error: songs.length === 0 ? 'No matches found. Try different words.' : '',
           label: query.length > 14 ? query.slice(0, 14) + '…' : query,
         })
+        // if (data.descriptions) updateTab(tabId, { descriptions: data.descriptions })
+
+        // rag summary come in after
+        if (data.summary) updateTab(tabId, { summary: data.summary})
       } else if (mode === 'svd') {
-          const [response, descResponse] = await Promise.all([
-            fetch(`/api/recommendations?query=${encodeURIComponent(query)}&top_k=10&mode=svd`),
-            fetch('/api/rag', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ query, top_k: 10, skip_expansion: true }),
-            })
-          ])
-          if (!response.ok) {
-            updateTab(tabId, { error: `Request failed (${response.status})`, songs: [] })
-            return
-          }
-          const data: SongRecommendation[] = await response.json()
-          const descriptions = descResponse.ok ? (await descResponse.json()).descriptions ?? [] : []
-          updateTab(tabId, {
-            songs: data,
-            descriptions,
-            error: data.length === 0 ? 'No matches found. Try adding more emotional keywords.' : '',
-            label: query.length > 14 ? query.slice(0, 14) + '…' : query,
-          })
+              // fire both requests simultaneously but handle them independently
+        const songPromise = fetch(`/api/recommendations?query=${encodeURIComponent(query)}&top_k=10&mode=svd`)
+        const descPromise = fetch('/api/rag', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query, top_k: 10, skip_expansion: true }),
+        })
+
+        // show songs as soon as they arrive
+        const response = await songPromise
+        if (!response.ok) {
+          updateTab(tabId, { error: `Request failed (${response.status})`, songs: [] })
+          return
+        }
+        const data: SongRecommendation[] = await response.json()
+        updateTab(tabId, {
+          songs: data,
+          error: data.length === 0 ? 'No matches found. Try adding more emotional keywords.' : '',
+          label: query.length > 14 ? query.slice(0, 14) + '…' : query,
+        })
+
+        // descriptions come in after — don't block songs coming on this
+        descPromise.then(async r => {
+          if (!r.ok) return
+          const desc = await r.json()
+          updateTab(tabId, { descriptions: desc.descriptions ?? [] })
+        })
       } else {
         const response = await fetch(`/api/recommendations?query=${encodeURIComponent(query)}&top_k=10&mode=tfidf`)
         if (!response.ok) {
@@ -710,7 +848,7 @@ function App(): JSX.Element {
             </button>
           ))}
           {tabs.length < 5 && (
-            <button className="tab-plus" onClick={addTab} title="New tab">+</button>
+            <button className="tab-plus" onClick={addTab}>+</button>
           )}
         </div>
 
@@ -719,13 +857,14 @@ function App(): JSX.Element {
 
           {/* ── HOME ── */}
           {activeTab.type === 'home' && (
-            <div>
+            <div className="home-view">
+              <GlitchBackground />
               <header className="hero">
                 <h1>Lyra</h1>
-                <p>spill your feelings ✦ we'll find the perfect song ♫</p>
+                <p>pour ur heart out ✦ we'll find ur song ♫</p>
               </header>
               <div className="home-btn-wrap">
-                <button className="home-find-btn" onClick={() => { playClick(); addTab() }}>find my song →</button>
+                <button className="home-find-btn" onClick={() => { playClick(); addTab() }}>press start →</button>
                 <button className="hiw-trigger-btn" onClick={() => {
                   playTransform()
                   setShowHiw(p => {
@@ -757,7 +896,7 @@ function App(): JSX.Element {
             </div>
           )}
 
-{/* setup */}
+          {/* setup */}
           {activeTab.type === 'setup' && (
             <div className="mode-picker-wrap">
               <div className="mode-picker-card">
@@ -793,10 +932,31 @@ function App(): JSX.Element {
             </div>
           )}
 
-          {/* ── SEARCH ── */}
+{/* ------ SEARCH ------- */}
           {activeTab.type === 'search' && (
             <div className="search-view-wrap">
               <div className="search-top-bar">
+
+                {/* book button - sibling to search-bar, not inside it */}
+                <div style={{ position: 'relative' }}>
+                  <button className="book-btn" onClick={() => { playClick(); setShowPresets(p => !p) }}>
+                    <img src={bookIcon} width={32} height={32} />
+                  </button>
+                  {showPresets && (
+                    <div className="preset-panel">
+                      <div className="preset-header">✦ mood starters book✦</div>
+                      {presetQueries.map((q, i) => (
+                        <button key={i} className="preset-item" onClick={() => {
+                          updateTab(activeTab.id, { query: q })
+                          setShowPresets(false)
+                        }}>
+                          {q}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
                 <div className="search-bar">
                   <div className="input-with-prefix">
                     <span className="input-prefix">I feel...</span>
@@ -820,7 +980,9 @@ function App(): JSX.Element {
                     find my song
                   </button>
                 </div>
+
               </div>
+
               {activeTab.loading && (
                 <div className="loading-screen">
                   <div className="loading-status">{loadingStatus[statusIdx]}</div>
@@ -837,6 +999,34 @@ function App(): JSX.Element {
                 </div>
               )}
               {activeTab.error && <div className="error-banner">{activeTab.error}</div>}
+              {activeTab.mode === 'rag' && activeTab.songs.length > 0 && (
+                <div className="rag-summary">
+                  <div
+                    ref={summaryHeaderRef}
+                    className="rag-summary-header"
+                    style={{
+                      animation: summaryMinimized ? 'none' : undefined,
+                      backgroundPosition: frozenBg && summaryMinimized ? frozenBg : undefined,
+                    }}
+                    onClick={toggleSummary}
+                  >
+                    ✦ why these songs? ✦
+                    <span style={{ float: 'right', fontSize: '14px' }}>{summaryMinimized ? '▼' : '▲'}</span>
+                  </div>
+                  {!summaryMinimized && (
+                    <div className="rag-summary-body">
+                      {activeTab.summary ? activeTab.summary : (
+                        <div className="song-summary-ghost">
+                          <div className="song-summary-ghost-line" style={{ width: '92%' }} />
+                          <div className="song-summary-ghost-line" style={{ width: '85%' }} />
+                          <div className="song-summary-ghost-line" style={{ width: '88%' }} />
+                          <div className="song-summary-ghost-line" style={{ width: '60%' }} />
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
               {activeTab.songs.length > 0 && (
                 <WinampPlayer
                   songs={activeTab.songs}
@@ -851,11 +1041,9 @@ function App(): JSX.Element {
               )}
             </div>
           )}
-
         </div>
       </div>
     </div>
   )
 }
-
 export default App
