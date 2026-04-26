@@ -2399,7 +2399,7 @@ body {
 
 .preset-panel {
   position: absolute;
-  top: calc(100% + 30px);
+  top: calc(100% + 38px);
   left: -67px;
   z-index: 100;
   width: 260px;
