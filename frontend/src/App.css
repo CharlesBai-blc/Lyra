@@ -888,7 +888,7 @@ body {
   display: flex;
   flex-direction: column;
 
-  border: 3px solid #7F77DD;
+  border: 3px solid #635ca9;
   border-radius: 8px;
   box-shadow: 6px 6px 0px rgba(127, 119, 221, 0.4);
   background: rgba(255, 255, 255, 0.15);
@@ -907,12 +907,31 @@ body {
 }
 
 .retro-titlebar {
-  /* background: linear-gradient(90deg, #7F77DD, #b89fe8); */
-  background: linear-gradient(90deg, #8b84e8, #b87fd4, #c084c4, #b87fd4, #8b84e8); 
+  position: relative;
+  background: #2a1a3e;
   padding: 8px 12px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  overflow: hidden;
+}
+
+.retro-titlebar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, #ff4fd8, #a78bfa, #6df0ff, #7cff6b, #ffe66d, #ff4fd8);
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+.retro-titlebar::after {
+  content: "";
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #ff4fd8, #a78bfa, #6df0ff, #7cff6b, #ffe66d, #ff4fd8);
+  pointer-events: none;
 }
 
 
@@ -923,6 +942,13 @@ body {
   font-weight: 700;
   color: white;
   letter-spacing: 0.05em;
+
+  position: relative;
+  z-index: 1;
+  background: linear-gradient(90deg, #ff4fd8, #a78bfa, #6df0ff, #ffe66d);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .retro-controls {
