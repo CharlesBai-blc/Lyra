@@ -671,7 +671,7 @@ function App(): JSX.Element {
     "i'm healing but not there yet",
     "nostalgic but calm",
     "feeling like crying in the shower",
-    "like i'm the main character",
+    "i'm the main character",
     "sad but make it danceable",
     "summer heartbreak",
     "3am can't sleep",
