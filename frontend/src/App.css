@@ -3307,7 +3307,7 @@ body {
 
 .preset-panel {
   position: absolute;
-  top: calc(100% + 40px);
+  top: calc(100% + 70px);
   left: -67px;
   z-index: 100;
   width: 260px;
@@ -4927,7 +4927,7 @@ body {
 
 .preset-panel {
   position: absolute;
-  top: calc(100% + 38px);
+  top: 40px;
   left: -67px;
   z-index: 100;
   width: 260px;
