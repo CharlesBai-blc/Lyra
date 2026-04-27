@@ -12,6 +12,7 @@ import confirmFile from './assets/confirmation_002.ogg'
 import closeFile from './assets/closesound.wav'
 import heartFile from './assets/heart.ogg'
 import listFile from './assets/list.ogg'
+import pageFile from './assets/pageflip.wav'
 import { BsSkipBackwardFill, BsSkipStartFill, BsSkipEndFill, BsSkipForwardFill, BsFillPlayFill, BsFillPauseFill, BsSuitHeartFill, BsVolumeUpFill, BsVolumeMuteFill, BsVolumeDownFill } from 'react-icons/bs'
 import { CursorTrail } from './CursorTrail'
 import { forwardRef } from 'react' 
@@ -36,6 +37,7 @@ preloadSound(confirmFile, 0.5)
 preloadSound(heartFile, 0.2)
 preloadSound(closeFile, 0.2)
 preloadSound(listFile, 0.3)
+preloadSound(pageFile, 0.3)
 
 function playSound(file: string) {
   if (isMuted) return
@@ -464,6 +466,10 @@ function playClosed() {
 
 function playListSound() {
   playSound(listFile)
+}
+
+function playPageFlip() {
+  playSound(pageFile)
 }
 
 
@@ -940,7 +946,7 @@ function App(): JSX.Element {
 
                 {/* book button - sibling to search-bar, not inside it */}
                 <div style={{ position: 'relative' }}>
-                  <button className="book-btn" onClick={() => { playClick(); setShowPresets(p => !p) }}>
+                  <button className="book-btn" onClick={() => { playPageFlip(); setShowPresets(p => !p) }}>
                     <img src={bookIcon} width={32} height={32} />
                   </button>
                   {showPresets && (
