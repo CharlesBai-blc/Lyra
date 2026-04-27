@@ -960,7 +960,7 @@ function App(): JSX.Element {
 
                 <div className="search-bar">
                   <div className="input-with-prefix">
-                    <span className="input-prefix">I feel...</span>
+                    <span className="input-prefix">my mood...</span>
                     <div className="input-sizer">
                       <span className="input-sizer-text">{activeTab.query}</span>
                       <input
