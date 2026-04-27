@@ -3619,18 +3619,32 @@ body {
 }
 
 .mode-picker-card {
-  background: rgba(255, 255, 255, 0.65);
-  backdrop-filter: blur(14px);
-  border: 1px solid rgba(255, 255, 255, 0.75);
-  border-radius: 18px;
+  background: #e8e6ff;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-radius: 0;
+
+  border-top: 4px solid #ffffff;
+  border-left: 4px solid #ffffff;
+  border-right: 4px solid #5a52b0;
+  border-bottom: 4px solid #5a52b0;
+
+  box-shadow:
+    4px 4px 0 #8880cc,
+    8px 8px 0 rgba(90, 82, 176, 0.3);
+
+  outline: 2px solid #b0a8e8;
+  outline-offset: -6px;
+
   padding: 2.25rem 2.5rem;
   max-width: 520px;
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem; 
-  align-items: center; 
-  text-align: center;  
+  gap: 1.25rem;
+  align-items: center;
+  text-align: center;
+  image-rendering: pixelated;
 }
 
 .mode-picker-heading {
