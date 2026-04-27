@@ -105,11 +105,12 @@ body {
 .error-banner {
   font-family: 'VT323', monospace;
   font-size: 15px;
-  color: #c0603a;
-  background: #ede0d4;
-  border: 1px solid #d4b8a8;
+  color: #8b2252;
+  background: #fce4f3;
+  border: 1px solid #e8b4d8;
   border-radius: 10px;
   padding: 10px 14px;
+  margin-top: 1rem;
   margin-bottom: 1.25rem;
 
   /* ADD THESE: */
@@ -1008,23 +1009,6 @@ body {
   box-shadow: 0 4px 20px rgba(127, 119, 221, 0.1);
 }
 
-
-/* please describe how you are feeling? */
-.error-banner {
-  font-family: 'VT323', monospace;
-  font-size: 15px;
-  color: #c0603a;
-  background: #ede0d4;
-  border: 1px solid #d4b8a8;
-  border-radius: 10px;
-  padding: 10px 14px;
-  margin-bottom: 1.25rem;
-
-  /* ADD THESE: */
-  width: fit-content;
-  max-width: 100%;
-  margin-inline: auto;
-}
 
 #answer-box {
   background: transparent;
