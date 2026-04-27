@@ -99,12 +99,12 @@ def register_chat_route(app, song_search):
             expanded_query = llm_expand_query(client, user_query)
 
         songs = song_search(expanded_query)
-        # descriptions = llm_describe_songs(client, user_query, songs)
+        descriptions = llm_describe_songs(client, user_query, songs)
         summary = llm_summarize_results(client, user_query, songs)
 
         return jsonify({
             "songs": songs,
-            # "descriptions": descriptions,
+            "descriptions": descriptions,
             "expanded_query": expanded_query,
             "summary": summary  
         })

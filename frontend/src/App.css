@@ -3307,7 +3307,7 @@ body {
 
 .preset-panel {
   position: absolute;
-  top: calc(100% + 38px);
+  top: calc(100% + 40px);
   left: -67px;
   z-index: 100;
   width: 260px;
@@ -3397,6 +3397,7 @@ body {
     2px 2px 0 #c724b1,
     -1px -1px 0 #7F77DD;
   position: relative;
+  user-select: none;
   overflow: hidden;
   cursor: pointer;
   image-rendering: pixelated;
@@ -3420,6 +3421,7 @@ body {
 
   box-shadow: 
     inset 0 2px 0 rgba(255,255,255,0.5),
+  
 }
 .rag-summary-body {
   font-family: 'Pixelify Sans', sans-serif;
@@ -3429,6 +3431,7 @@ body {
   color: #2d1b4e;
   padding: 14px 18px;
   background: linear-gradient(160deg, #fff5fe, #f0e8ff, #e8f8ff);
+  user-select: none;
 }
 
 /* song summary coming in late (ghost) */

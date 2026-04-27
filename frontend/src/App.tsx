@@ -220,6 +220,7 @@ function WinampPlayer({ songs, descriptions, onClickSound, mode, favoriteSongs, 
   expandedQuery: string
   query: string
 }) {
+  console.log("WinampPlayer query prop:", query)
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
   const [volume, setVolume] = useState(0.75)
