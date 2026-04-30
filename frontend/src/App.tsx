@@ -668,6 +668,14 @@ function App(): JSX.Element {
   const [showPresets, setShowPresets] = useState(false)
 
   const presetQueries = [
+    
+    //soft and cozy
+  "rainy sunday, nowhere to be",
+  "soft morning, slow coffee",
+  "cozy but existential",
+  "autumn and letting go",
+  "reading by a window while it rains",
+  
   //late night + introspective
   "3am overthinking spiral",
   "quiet night, loud thoughts",
@@ -698,13 +706,6 @@ function App(): JSX.Element {
   "underdog era, proving them wrong",
   "running from my problems productively",
   "unbothered and glowing up",
-
-  //soft and cozy
-  "rainy sunday, nowhere to be",
-  "soft morning, slow coffee",
-  "cozy but existential",
-  "autumn and letting go",
-  "reading by a window while it rains",
 
   //movie-like
   "feels like a movie ending",
