@@ -233,11 +233,6 @@ function WinampPlayer({ songs, descriptions, onClickSound, mode, favoriteSongs, 
   const audioRef = useRef<HTMLAudioElement>(null)
   const cleanArtistName = (artist: string) => artist.replace(/[\[\]']/g, '')
 
-  // fires when a new search result comes in where we reset the first song
-  useEffect(() => {
-    setSelectedIndex(0)
-  }, [songs])
-
   // fires when selected song changes
   useEffect(() => {
     setArtUrl(null)
@@ -688,6 +683,7 @@ function App(): JSX.Element {
   "dancing alone like nobody's watching",
   "summer and nothing matters",
   "windows down, volume up",
+  "life is so good right now",
 
   //love and heartbreak
   "falling in love and terrified",
@@ -708,6 +704,7 @@ function App(): JSX.Element {
   "soft morning, slow coffee",
   "cozy but existential",
   "autumn and letting go",
+  "reading by a window while it rains",
 
   //movie-like
   "feels like a movie ending",
