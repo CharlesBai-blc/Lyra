@@ -80,8 +80,12 @@ def register_chat_route(app, song_search):
     @app.route("/api/rag", methods=["POST"])
     def rag():
         data = request.get_json() or {}
+
         user_query = (data.get("query") or "").strip()
         skip_expansion = data.get("skip_expansion", False)
+
+        top_k = int(data.get("top_k", 10))
+        top_k = max(1, min(top_k, 25))
         
         if not user_query:
             return jsonify({"error": "Query is required"}), 400
@@ -98,7 +102,7 @@ def register_chat_route(app, song_search):
         else:
             expanded_query = llm_expand_query(client, user_query)
 
-        songs = song_search(expanded_query)
+        songs = song_search(expanded_query, top_k=top_k)
         descriptions = llm_describe_songs(client, user_query, songs)
         summary = llm_summarize_results(client, user_query, songs)
 

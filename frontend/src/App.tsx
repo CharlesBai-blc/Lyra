@@ -770,6 +770,7 @@ function App(): JSX.Element {
     setTabs(prev => prev.map(t => t.id === id ? { ...t, ...patch } : t))
   }
 
+  const TOP_K = 15;
   const fetchByQuery = async (tabId: string, query: string, mode: SearchMode) => {
     updateTab(tabId, { loading: true, error: '', descriptions: [] })
     try {
@@ -777,7 +778,7 @@ function App(): JSX.Element {
         const response = await fetch('/api/rag', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query, top_k: 10 }),
+          body: JSON.stringify({ query, top_k: TOP_K }),
         })
         if (!response.ok) {
           updateTab(tabId, { error: `Request failed (${response.status})`, songs: [] })
@@ -799,11 +800,11 @@ function App(): JSX.Element {
         if (data.summary) updateTab(tabId, { summary: data.summary})
       } else if (mode === 'svd') {
               // fire both requests simultaneously but handle them independently
-        const songPromise = fetch(`/api/recommendations?query=${encodeURIComponent(query)}&top_k=10&mode=svd`)
+        const songPromise = fetch(`/api/recommendations?query=${encodeURIComponent(query)}&top_k=${TOP_K}&mode=svd`)
         const descPromise = fetch('/api/rag', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query, top_k: 10, skip_expansion: true }),
+          body: JSON.stringify({ query, top_k: TOP_K, skip_expansion: true }),
         })
 
         // show songs as soon as they arrive
@@ -826,7 +827,7 @@ function App(): JSX.Element {
           updateTab(tabId, { descriptions: desc.descriptions ?? [] })
         })
       } else {
-        const response = await fetch(`/api/recommendations?query=${encodeURIComponent(query)}&top_k=10&mode=tfidf`)
+        const response = await fetch(`/api/recommendations?query=${encodeURIComponent(query)}&top_k=${TOP_K}&mode=tfidf`)
         if (!response.ok) {
           updateTab(tabId, { error: `Request failed (${response.status})`, songs: [] })
           return

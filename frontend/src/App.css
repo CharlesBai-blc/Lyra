@@ -1878,21 +1878,6 @@ body {
   background: rgba(229, 191, 249, 0.25);
 }
 
-.retro-tab {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  padding: 8px 20px;
-  border: none;
-  border-right: 1px solid rgba(127, 119, 221, 0.2);
-  background: transparent;
-  color: rgb(89, 81, 148);
-  cursor: pointer;
-  transition: all 0.15s ease;
-  position: relative;
-  top: 2px;
-}
-
 .retro-tab.active {
   color: #682db0;
   background: rgba(255,255,255,0.4);
@@ -3360,6 +3345,7 @@ body {
 
 .tab-close {
   margin-left: 7px;
+  margin-right: -10px;
   font-size: 10px;
   opacity: 0.5;
   line-height: 1;
