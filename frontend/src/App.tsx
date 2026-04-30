@@ -5,7 +5,7 @@ import { FaSpotify } from 'react-icons/fa'
 import clickFile from './assets/click.mp3'
 import errorFile from './assets/eror.mp3'
 import selectFile from './assets/select.mp3'
-import middleFile from './assets/minimize.wav'
+import middleFile from './assets/minimize.mp3'
 import boomFile from './assets/vine-boom.mp3'
 import transportFile from './assets/click.wav'
 import confirmFile from './assets/confirmation_002.ogg'
@@ -233,6 +233,12 @@ function WinampPlayer({ songs, descriptions, onClickSound, mode, favoriteSongs, 
   const audioRef = useRef<HTMLAudioElement>(null)
   const cleanArtistName = (artist: string) => artist.replace(/[\[\]']/g, '')
 
+  // fires when a new search result comes in where we reset the first song
+  useEffect(() => {
+    setSelectedIndex(0)
+  }, [songs])
+
+  // fires when selected song changes
   useEffect(() => {
     setArtUrl(null)
     setPreviewUrl(null)
@@ -311,7 +317,7 @@ function WinampPlayer({ songs, descriptions, onClickSound, mode, favoriteSongs, 
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <div className="winamp-song-title">{song.title}</div>
                 </div>
-                <div className="winamp-song-meta">{cleanArtistName(song.artist)}  ✧  {song.album}</div>
+                <div className="winamp-song-meta">{cleanArtistName(song.artist)}</div>
                 {/* {(mode === 'rag' || mode === 'svd') && ( */}
                 {(mode === 'svd') && (
                   <div className="rag-info-wrap">
@@ -561,7 +567,7 @@ const HowItWorksModal = forwardRef<HTMLDivElement, { onClose: () => void }>(
             </div>
           </div>
         ))}
-        <p className="hiw-footnote">✦ 10k+ songs with lyrics & audio features ✦</p>
+        <p className="hiw-footnote">✦ 5k+ songs with lyrics & audio features ✦</p>
       </div>
     </div>
   )
@@ -666,22 +672,46 @@ function App(): JSX.Element {
   const [showPresets, setShowPresets] = useState(false)
 
   const presetQueries = [
-    "soft sadness with warm memories",
-    "late night overthinking energy",
-    "i'm healing but not there yet",
-    "nostalgic but calm",
-    "feeling like crying in the shower",
-    "i'm the main character",
-    "sad but make it danceable",
-    "summer heartbreak",
-    "3am can't sleep",
-    "falling in love for the first time",
-    "revenge glow up era",
-    "i'm missing someone but smiling anyway",
-    "nostalgic for something i never had",
-    "dancing alone in my room",
-    "everything is fine but it's not",
-  ]
+  //late night + introspective
+  "3am overthinking spiral",
+  "quiet night, loud thoughts",
+  "lying awake replaying memories",
+
+  //healing
+  "slowly putting myself back together",
+  "grief that comes in waves",
+
+  //joy
+  "main character moment",
+  "finally feel like myself again",
+  "dancing alone like nobody's watching",
+  "summer and nothing matters",
+  "windows down, volume up",
+
+  //love and heartbreak
+  "falling in love and terrified",
+  "summer heartbreak slow motion",
+
+  //melancholy and bittersweet
+  "beautiful sadness",
+  "sad but make it danceable",
+  "everything is fine (it's not)",
+
+  //motivation and energy
+  "underdog era, proving them wrong",
+  "running from my problems productively",
+  "unbothered and glowing up",
+
+  //soft and cozy
+  "rainy sunday, nowhere to be",
+  "soft morning, slow coffee",
+  "cozy but existential",
+  "autumn and letting go",
+
+  //movie-like
+  "feels like a movie ending",
+  "emotional flashback montage",
+]
   // rag summary minimized or not
   const [summaryMinimized, setSummaryMinimized] = useState(false)
 
@@ -951,7 +981,7 @@ function App(): JSX.Element {
                   </button>
                   {showPresets && (
                     <div className="preset-panel">
-                      <div className="preset-header">✦ mood starters book✦</div>
+                      <div className="preset-header">✦ mood mix ✦</div>
                       {presetQueries.map((q, i) => (
                         <button key={i} className="preset-item" onClick={() => {
                           updateTab(activeTab.id, { query: q })

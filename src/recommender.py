@@ -18,7 +18,6 @@ class SongRecord:
     id: str
     title: str
     artist: str
-    album: str
     danceability: float
     energy: float
     valence: float
@@ -73,7 +72,6 @@ class TfIdfSongRecommender:
                         id=(row.get("id") or ""),
                         title=(row.get("name") or "Unknown Title"),
                         artist=(row.get("artists") or "Unknown Artist"),
-                        album=(row.get("album_name") or "Unknown Album"),
                         danceability=_to_float(row.get("danceability")),
                         energy=_to_float(row.get("energy")),
                         valence=_to_float(row.get("valence")),
@@ -154,7 +152,7 @@ class TfIdfSongRecommender:
                     "spotify_url": f"https://open.spotify.com/track/{song.id}",
                     "title": song.title,
                     "artist": song.artist,
-                    "album": song.album,
+                    # "album": song.album,
                     "danceability": round(song.danceability, 3),
                     "energy": round(song.energy, 3),
                     "valence": round(song.valence, 3),
@@ -171,6 +169,6 @@ class TfIdfSongRecommender:
 @lru_cache(maxsize=1)
 def get_recommender() -> TfIdfSongRecommender:
     current_directory = os.path.dirname(os.path.abspath(__file__))
-    csv_path = os.path.join(current_directory, "data_processing", "sample_dataset.csv")
-    # add new song csv called sample_dataset_new
+    csv_path = os.path.join(current_directory, "data_processing", "BIG_COMBINED.csv")
+                        # add csv here
     return TfIdfSongRecommender(csv_path=csv_path)

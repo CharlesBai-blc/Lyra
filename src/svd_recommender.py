@@ -254,7 +254,6 @@ class Song:
     id: str
     title: str
     artist: str
-    album: str
     danceability: float
     energy: float
     valence: float
@@ -397,7 +396,6 @@ class SvdSongRecommender:
                     id=row.get("id") or "",
                     title=row.get("name") or "Unknown Title",
                     artist=row.get("artists") or "Unknown Artist",
-                    album=row.get("album_name") or "Unknown Album",
                     danceability=_to_float(row.get("danceability")),
                     energy=_to_float(row.get("energy")),
                     valence=_to_float(row.get("valence")),
@@ -560,6 +558,6 @@ class SvdSongRecommender:
 @lru_cache(maxsize=1)
 def get_svd_recommender() -> SvdSongRecommender:
     here = os.path.dirname(os.path.abspath(__file__))
-    csv_path = os.path.join(here, "data_processing", "sample_dataset.csv")
-    # add new song csv called sample_dataset_new
+    csv_path = os.path.join(here, "data_processing", "BIG_COMBINED.csv")
+                        # add new csv here
     return SvdSongRecommender(csv_path=csv_path)
