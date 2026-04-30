@@ -225,7 +225,7 @@ function WinampPlayer({ songs, descriptions, onClickSound, mode, favoriteSongs, 
   console.log("WinampPlayer query prop:", query)
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
-  const [volume, setVolume] = useState(0.75)
+  const [volume, setVolume] = useState(0.2)
   const [showVolume, setShowVolume] = useState(false)
   const song = songs[selectedIndex]
   const [artUrl, setArtUrl] = useState<string | null>(null)
@@ -262,6 +262,7 @@ function WinampPlayer({ songs, descriptions, onClickSound, mode, favoriteSongs, 
 
   const togglePlay = () => {
     if (!audioRef.current) return
+    audioRef.current.volume = volume 
     if (isPlaying) {
       audioRef.current.pause()
     } else {

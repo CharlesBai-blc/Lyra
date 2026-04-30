@@ -2298,9 +2298,9 @@ body {
   background: rgba(255, 255, 255, 0.5);
 }
 
-.winamp-playlist-item.active {
+/* .winamp-playlist-item.active {
   background: linear-gradient(90deg, #f7a8c4, #c8b4f8);
-}
+} */
 
 .winamp-main {
   flex: 1;
@@ -2877,8 +2877,9 @@ body {
   animation: hiw-fade-in 0.3s ease;
 }
 
+/* hiw top header */
 .hiw-inline-header {
-  background: linear-gradient(90deg, #ff4fd8, #ffe66d, #6df0ff, #ffe66d, #ff4fd8);
+  background: linear-gradient(90deg, #ff4fd8, #ffe66d, #6df0ff);
   padding: 8px 12px;
   display: flex;
   align-items: center;
@@ -2918,26 +2919,10 @@ body {
 .hiw-intro {
   font-family: 'DM Sans', sans-serif;
   font-size: 14px;
-  color: #4a4060;
+  color: #523b69;
   line-height: 1.75;
   padding-bottom: 16px;
   border-bottom: 1px solid rgba(176, 168, 232, 0.35);
-}
-
-.hiw-section {
-  border: 2px solid #b0a8e8;
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.55);
-  overflow: hidden;
-}
-
-.hiw-section-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 14px;
-  background: linear-gradient(90deg, rgba(232, 230, 255, 0.7), rgba(212, 232, 245, 0.5));
-  border-bottom: 1px solid rgba(176, 168, 232, 0.4);
 }
 
 .hiw-chip {
@@ -2952,57 +2937,8 @@ body {
   letter-spacing: 0.05em;
 }
 
-.hiw-mode-name {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 14px;
-  color: #4a4060;
-  font-weight: 500;
-}
-
-.hiw-badge {
-  margin-left: auto;
-  font-family: 'VT323', monospace;
-  font-size: 15px;
-  padding: 2px 10px;
-  border-radius: 3px;
-  border: 1.5px solid;
-  letter-spacing: 0.05em;
-}
-
-.hiw-badge-fast  { background: #e1f5ee; border-color: #5dcaa5; color: #0f6e56; }
-.hiw-badge-smart { background: #eeedfe; border-color: #7f77dd; color: #3c3489; }
-.hiw-badge-deep  { background: #fbeaf0; border-color: #ed93b1; color: #72243e; }
-
 .hiw-section-body {
   padding: 14px 16px;
-}
-
-.hiw-steps {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.hiw-step {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-}
-
-.hiw-step-num {
-  font-family: 'VT323', monospace;
-  font-size: 15px;
-  color: #8860b0;
-  min-width: 24px;
-  height: 24px;
-  border: 1.5px solid #b0a8e8;
-  border-radius: 3px;
-  background: #e8e6ff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  box-shadow: 1px 1px 0 #8880cc;
 }
 
 .hiw-step-text {
@@ -3885,6 +3821,7 @@ body {
   background: linear-gradient(90deg, #f7a8c4, #c8b4f8);
 }
 
+
 .winamp-main {
   flex: 1;
   display: flex;
@@ -4472,7 +4409,7 @@ body {
 }
 
 .hiw-inline-close:hover {
-  background: rgba(220, 80, 80, 0.6);
+  background: rgba(255, 79, 216, 0.4);
 }
 
 .hiw-inline.closing {
@@ -4487,22 +4424,6 @@ body {
 @keyframes hiw-fade-out {
   from { opacity: 1; transform: translateY(0); }
   to   { opacity: 0; transform: translateY(-8px); }
-}
-
-.hiw-body {
-  padding: 22px 24px 26px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.hiw-intro {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 14px;
-  color: #4a4060;
-  line-height: 1.75;
-  padding-bottom: 16px;
-  border-bottom: 1px solid rgba(176, 168, 232, 0.35);
 }
 
 .hiw-section {
@@ -4554,10 +4475,6 @@ body {
 .hiw-badge-smart { background: #eeedfe; border-color: #7f77dd; color: #3c3489; }
 .hiw-badge-deep  { background: #fbeaf0; border-color: #ed93b1; color: #72243e; }
 
-.hiw-section-body {
-  padding: 14px 16px;
-}
-
 .hiw-steps {
   display: flex;
   flex-direction: column;
@@ -4602,6 +4519,7 @@ body {
   letter-spacing: 0.06em;
   padding-top: 4px;
 }
+/* how does it work? home */
 .hiw-trigger-btn {
   font-family: 'VT323', monospace;
   font-size: 17px;
@@ -4610,7 +4528,7 @@ body {
   cursor: pointer;
   background: transparent;
   border: none;
-  color: #6b6080;
+  color: #8860b0;
   box-shadow: none;
   animation: fadeUp 0.6s ease 0.45s both;
   opacity: 0.75;
