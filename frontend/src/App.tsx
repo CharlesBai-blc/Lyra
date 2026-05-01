@@ -668,10 +668,6 @@ function App(): JSX.Element {
   const [showPresets, setShowPresets] = useState(false)
 
   const presetQueries = [
-    
-    //soft and cozy
-  "autumn and letting go",
-
   //late night + introspective
   "3am overthinking spiral",
   "quiet night, loud thoughts",
@@ -692,9 +688,12 @@ function App(): JSX.Element {
   //love and heartbreak
   "falling in love and terrified",
   "summer heartbreak slow motion",
+  
 
   //melancholy and bittersweet
+  "autumn and letting go",
   "beautiful sadness",
+  
   "sad but make it danceable",
   "everything is fine (it's not)",
   "rainy sunday, nowhere to be",
