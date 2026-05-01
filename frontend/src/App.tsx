@@ -668,15 +668,6 @@ function App(): JSX.Element {
   const [showPresets, setShowPresets] = useState(false)
 
   const presetQueries = [
-  //late night + introspective
-  "3am overthinking spiral",
-  "quiet night, loud thoughts",
-  "lying awake replaying memories",
-
-  //healing
-  "slowly putting myself back together",
-  "grief that comes in waves",
-
   //joy
   "main character moment",
   "finally feel like myself again",
@@ -685,6 +676,15 @@ function App(): JSX.Element {
   "windows down, volume up",
   "life is so good right now",
 
+  //late night + introspective
+  "3am overthinking spiral",
+  "quiet night, loud thoughts",
+  "lying awake replaying memories",
+
+  //healing
+  "slowly putting myself back together",
+  "grief that comes in waves",
+  
   //love and heartbreak
   "falling in love and terrified",
   "summer heartbreak slow motion",
