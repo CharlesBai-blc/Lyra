@@ -670,8 +670,6 @@ function App(): JSX.Element {
   const presetQueries = [
     
     //soft and cozy
-  "soft morning, slow coffee",
-  "cozy but existential",
   "autumn and letting go",
 
   //late night + introspective
@@ -687,7 +685,7 @@ function App(): JSX.Element {
   "main character moment",
   "finally feel like myself again",
   "dancing alone like nobody's watching",
-  "summer and nothing matters",
+  "summertime breeze and good vibes",
   "windows down, volume up",
   "life is so good right now",
 
