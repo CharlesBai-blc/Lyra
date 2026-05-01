@@ -670,7 +670,6 @@ function App(): JSX.Element {
   const presetQueries = [
     
     //soft and cozy
-  "rainy sunday, nowhere to be",
   "soft morning, slow coffee",
   "cozy but existential",
   "autumn and letting go",
@@ -700,6 +699,7 @@ function App(): JSX.Element {
   "beautiful sadness",
   "sad but make it danceable",
   "everything is fine (it's not)",
+  "rainy sunday, nowhere to be",
 
   //motivation and energy
   "underdog era, proving them wrong",
