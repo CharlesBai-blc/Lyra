@@ -674,8 +674,7 @@ function App(): JSX.Element {
   "soft morning, slow coffee",
   "cozy but existential",
   "autumn and letting go",
-  "reading by a window while it rains",
-  
+
   //late night + introspective
   "3am overthinking spiral",
   "quiet night, loud thoughts",
@@ -704,7 +703,7 @@ function App(): JSX.Element {
 
   //motivation and energy
   "underdog era, proving them wrong",
-  "running from my problems productively",
+  "running from my problems",
   "unbothered and glowing up",
 
   //movie-like
